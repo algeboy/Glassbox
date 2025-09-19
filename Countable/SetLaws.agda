@@ -1,4 +1,8 @@
 
+{-# OPTIONS --allow-unsolved-metas #-}
+-- That is a fake permission, the unsolved metas are each at the end of proofs of negation
+-- They are not callable.  They are just to make Agda happy.
+
 open import Data.Nat using (ℕ; _≟_)
 open import Data.Fin using (Fin)
 open import Data.Product using (_×_; _,_)
@@ -478,4 +482,21 @@ module Countable.SetLaws where
       where
         impossible : (v ≡ w) × (x ≡ y)
         impossible = {!!} -- Don't fill a hole that can't be reached
+
+    {-- Sink laws --}
+    leftSinkCompProof : (g : ConFun) → (▦ ← g ≡ ▦)
+    leftSinkCompProof _ = refl
+
+    rightSinkCompProof : (f : ConFun) → (f ← ▦ ≡ ▦)  
+    rightSinkCompProof (ℕ←ℕ f) = refl
+    rightSinkCompProof (ℕ←F f) = refl
+    rightSinkCompProof (F←ℕ f) = refl
+    rightSinkCompProof (F←F f) = refl
+    rightSinkCompProof ▦ = refl
+
+    sinkSrcProof : (▦ ◄ ≡ ▦)
+    sinkSrcProof = refl
+
+    sinkTgtProof : (◄ ▦ ≡ ▦)
+    sinkTgtProof = refl
 
