@@ -28,12 +28,6 @@ open import Data.Product using (Σ; Σ-syntax; _,_; _×_; proj₁; proj₂)
 module Countable.SetCategory where
 
     -- TBD: should this signature belong in some general category module?
-    {-- As an abstract category is a set of morphisms --}
-    AbsCatSig : Signature
-    AbsCatSig = (4 , λ i → lookup operations i)
-        where
-        operations : Vec (String × ℕ) 4
-        operations = ("▦" , 0) ∷ ("_∘_" , 2) ∷ ("src" , 1) ∷ ("tgt" , 1) ∷ []
 
     SetCat : Structure₁ {AbsCatSig}
     SetCat = (ConFun , ops )

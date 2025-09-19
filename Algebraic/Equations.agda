@@ -19,21 +19,19 @@ open import Countable.Sets
 module Algebraic.Equations where  
 
   {-- An inductive type for formulas to become the carrier set of a free algebra. --}
-  data Formula (sig : Signature) (X : Set) : Set where
-    var  : (x : X) →  Formula sig X
+  data Formula {sig : Signature} (X : Set) : Set where
+    var  : (x : X) →  Formula {sig} X
     op   : (i : (Fin (nOps sig))) 
-            → (Vec (Formula sig X) (valence sig i))
-            → Formula sig X
-
+            → (Vec (Formula {sig} X) (valence sig i))
+            → Formula X
 
   {-- Although this should be a pair-type to match the definition, 
       we use a record to get named fields for easier access. --}
-  record Equation (sig : Signature) (X : Set) : Set where
+  record Equation {sig : Signature} (X : Set) : Set where
     constructor _,_
     field
-      lhs : Formula sig X
-      rhs : Formula sig X
-
+      lhs : Formula {sig} X
+      rhs : Formula {sig} X
 
   -- Evaluates a formula by interpreting variables and applying the 
   -- operations from a target algebraic structure.
@@ -42,7 +40,7 @@ module Algebraic.Equations where
     → {X : Set}
     → (alg : Structure {sig})
     → (const : X → asSet (proj₁ alg))
-    → (form : Formula sig X)
+    → (form : Formula{sig} X)
     → asSet (proj₁ alg)
   evalFormula {sig} alg const (var x) = const x
   evalFormula {sig} alg const (op i args) =
@@ -53,7 +51,7 @@ module Algebraic.Equations where
     → {X : Set}
     → (alg : Structure₁ {sig})
     → (const : X → proj₁ alg)
-    → (form : Formula sig X)
+    → (form : Formula {sig} X)
     → proj₁ alg
   evalFormula₁ {sig} alg const (var x) = const x
   evalFormula₁ {sig} alg const (op i args) =
