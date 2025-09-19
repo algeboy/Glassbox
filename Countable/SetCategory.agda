@@ -13,6 +13,7 @@ open import Axiom.Extensionality.Propositional using (Extensionality)
 open import Function using (_∘_; id)
 
 
+open import Algebraic.Signatures
 open import Countable.Sets
 open import Algebraic.Structures
 
@@ -43,15 +44,15 @@ module Countable.SetCategory where
         ops (Fin.suc Fin.zero) = composeConFun  -- binary operation (valence 2)
             where
             composeConFun : Vec ConFun 2 → ConFun
-            composeConFun (f ∷ g ∷ []) = f ∘ g
+            composeConFun (f ∷ g ∷ []) = f ← g
         ops (Fin.suc (Fin.suc Fin.zero)) = srcConFun  -- source (valence 1)
             where 
-            srcConFun : ConFun → ConFun
-            srcConFun f = f ◄
+            srcConFun : Vec ConFun 1 → ConFun
+            srcConFun (f ∷ []) = f ◄
         ops (Fin.suc (Fin.suc (Fin.suc Fin.zero))) = tgtConFun  -- target (valence 1)
             where 
-            tgtConFun : ConFun → ConFun
-            tgtConFun f = ◄ f
+            tgtConFun : Vec ConFun 1 → ConFun
+            tgtConFun (f ∷ []) = ◄ f
  
     {-- Laws --}
     {-- target of source = source --}
