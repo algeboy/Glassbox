@@ -6,9 +6,9 @@ open import Data.Fin using (Fin)
 open import Data.Product using (Σ; Σ-syntax; _,_; _×_; proj₁; proj₂)
 open import Data.String using (String)
 open import Data.Vec using (Vec; map)
+open import Data.Vec.Properties using (map-id)
 
-
-open import Relation.Binary.PropositionalEquality using ( _≡_ )
+open import Relation.Binary.PropositionalEquality using ( _≡_; refl )
 
 open import Algebraic.Signatures
 open import Countable.Sets
@@ -60,3 +60,19 @@ module Algebraic.Structures where
             (x : Vec A (proj₂ (proj₂ sig i))) →
                 f (opsA i x) ≡ opsB i (map f x)
         )        
+
+    {-- Proof that identity function on any set is a homomorphism --}
+    idHom : ∀ {sig : Signature} {A : Structure {sig}} → Homomorphism A A
+    idHom {sig} {A , opsA} = (idFun , idPf)
+      where
+        idFun : asSet A → asSet A
+        idFun x = x
+        
+        idPf : (i : Fin (nOps sig)) →
+               (x : Vec (asSet A) (proj₂ (proj₂ sig i))) →
+               idFun (opsA i x) ≡ opsA i (map idFun x)
+        idPf i x rewrite map-id x = refl
+
+    {-- source of Homomorphism returns identity on domain --}
+    source : ∀ {sig : Signature} {A B : Structure {sig}} → Homomorphism A B → Homomorphism A A
+    source {sig} {A} {B} (f , pf) = idHom {sig} {A}

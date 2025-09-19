@@ -81,3 +81,20 @@ module Algebraic.Varieties where
        → Set
     inVariety₁ {A} {sig} (n , X , eqs) alg = 
       (const : X → A) → (i : Fin n) → SatEqProp₁ {X} {sig} alg (proj₂ (eqs i))
+
+    {-- Now make a subcategory of ConFun category consisting 
+      of algebraic structures that satisfy the laws and 
+      whose homomorphisms are of carrier type ConFun. --}
+
+    {-- Step 1, make a type of morphisms between algebras in a variety --}
+    Hom : ∀ {sig : Signature} → (V : Variety {sig}) → Set
+    Hom {sig} V = 
+      Σ[ algA ∈ Structure {sig} ] Σ[ algB ∈ Structure {sig} ] 
+        let A = asSet (proj₁ algA)
+            B = asSet (proj₁ algB)
+        in (inVariety {A} {sig} V algA) × (inVariety {B} {sig} V algB) × (Homomorphism {sig} algA algB)
+
+    {-- Step 2, define the operators of an abstract category to Hom as carrier--}
+    _ ◁◁ : ∀ {sig : Signature} → {V : Variety {sig}} → Hom {sig} V → Hom {sig} V → Hom {sig} V
+    _ ◁◁ {sig} {V} (algA , algB , (inA , inB , homAB)) = {!!} -- Source of proj_1 homAB
+
