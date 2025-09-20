@@ -1,6 +1,6 @@
 -- Cyclic Monoid using ConSet framework
 open import Data.Product using (Σ; _,_; proj₁; proj₂; _×_)
-open import Data.Fin using (Fin; toℕ; zero; suc; fromℕ<)
+open import Data.Fin using (Fin; toℕ; zero; suc; fromℕ<; #_)
 open import Data.Vec as Vec using (Vec; []; _∷_)
 open import Data.Nat as Nat using (ℕ; _+_; zero; suc)
 open import Data.Nat.DivMod using (_mod_)
@@ -103,7 +103,7 @@ fin-left-identity = fin-left-identity-proof
 fin-right-identity = fin-right-identity-proof  
 fin-associativity = fin-associativity-proof
 
-
+ 
 
 
 
@@ -166,11 +166,20 @@ e3 = Z3-ops identity-op []
 _+₃_ : Z3-carrier → Z3-carrier → Z3-carrier
 a +₃ b = Z3-ops add-op (a ∷ b ∷ [])
 
+--------
 -- Example: 1 + 2 = 0 in Z/3Z
 example-add : Z3-carrier
-example-add = (suc zero) +₃ (suc (suc zero))
+example-add = (# 1) +₃ (# 2)
 
 -- Verify it equals 0
-example-proof : example-add ≡ zero
+example-proof : example-add ≡ (# 0)
 example-proof = refl
 
+---------
+-- Example: identity properties 2+0=2
+example-add0 : Z3-carrier
+example-add0 = (# 2) +₃ e3
+
+-- Verify it equals 2
+example-proof0 : example-add0 ≡ (# 2)
+example-proof0  = refl
