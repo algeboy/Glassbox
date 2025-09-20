@@ -44,13 +44,19 @@ module Algebraic.Structures where
     getOp sig alg i = (proj₂ alg) i
 
     {-- This is Definition 3.?? : Homomorphism --}
-    Homomorphism : ∀ {sig : Signature} → Structure {sig} → Structure {sig} → Set
+    Homomorphism : ∀ {sig : Signature} → Set
     Homomorphism {sig} (A , opsA) (B , opsB) = 
-        Σ[ f ∈ (asSet A → asSet B) ]
+        Σ[ f ∈ ConFun ]
         ((i : Fin (nOps sig)) →
             (x : Vec (asSet A) (proj₂ (proj₂ sig i))) →
                 f (opsA i x) ≡ opsB i (map f x)
         )
+    -- record Homomorphism where
+    --     constructor □ | H
+    --     field
+    --         algA : Structure {sig}
+    --         algB : Structure {sig}
+    --         homAB : realHomomorphism algA algB
 
     {-- This is Definition 3.?? : Homomorphism --}
     Homomorphism₁ : ∀ {sig : Signature} → Structure₁ {sig} → Structure₁ {sig} → Set
@@ -62,7 +68,7 @@ module Algebraic.Structures where
         )        
 
     {-- Proof that identity function on any set is a homomorphism --}
-    idHom : ∀ {sig : Signature} {A : Structure {sig}} → Homomorphism A A
+    idHom : ∀ {sig : Signature} {A : Structure {sig}} → Homomorphism {sig} A A
     idHom {sig} {A , opsA} = (idFun , idPf)
       where
         idFun : asSet A → asSet A
@@ -74,5 +80,16 @@ module Algebraic.Structures where
         idPf i x rewrite map-id x = refl
 
     {-- source of Homomorphism returns identity on domain --}
-    source : ∀ {sig : Signature} {A B : Structure {sig}} → Homomorphism A B → Homomorphism A A
+    source : ∀ {sig : Signature} {A B : Structure {sig}} → Homomorphism {sig} A B → Homomorphism {sig} A A
     source {sig} {A} {B} (f , pf) = idHom {sig} {A}
+
+    {-- target of Homomorphism returns identity on codomain --}
+    target : ∀ {sig : Signature} {A B : Structure {sig}} → Homomorphism {sig} A B → Homomorphism {sig} B B
+    target {sig} {A} {B} (f , pf) = idHom {sig} {B} 
+
+    {-- Composition of homomorphisms --}
+    _∘_ : ∀ {sig : Signature} {A B C : Structure {sig}} 
+          → Homomorphism {sig} B C 
+          → Homomorphism {sig} A B
+          → Homomorphism {sig} A C
+    _∘_ {sig} {A} {B} {C} (g , pfG) (f , pfF) = (g ← f , {!!})

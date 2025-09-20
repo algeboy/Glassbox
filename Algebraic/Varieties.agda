@@ -14,8 +14,8 @@ open import Data.Vec as Vec using (Vec; []; _∷_; lookup; toList)
 open import Data.Product using (proj₁; proj₂)
 
 open import Algebraic.Signatures 
-open import Algebraic.Structures 
 open import Algebraic.Equations
+open import Algebraic.Structures
 open import Countable.Sets
 
 module Algebraic.Varieties where 
@@ -87,14 +87,32 @@ module Algebraic.Varieties where
       whose homomorphisms are of carrier type ConFun. --}
 
     {-- Step 1, make a type of morphisms between algebras in a variety --}
-    Hom : ∀ {sig : Signature} → (V : Variety {sig}) → Set
-    Hom {sig} V = 
-      Σ[ algA ∈ Structure {sig} ] Σ[ algB ∈ Structure {sig} ] 
-        let A = asSet (proj₁ algA)
-            B = asSet (proj₁ algB)
-        in (inVariety {A} {sig} V algA) × (inVariety {B} {sig} V algB) × (Homomorphism {sig} algA algB)
+    data Hom : ∀ {sig : Signature} → (V : Variety {sig}) → Set₁ where
+      H : ∀ {sig : Signature} (V : Variety {sig}) {algA algB : Structure {sig}} → (inA : inVariety {asSet (proj₁ algA)} {sig} V algA) 
+        → (inB : inVariety {asSet (proj₁ algB)} {sig} V algB) 
+        → (homAB : Homomorphism {sig} algA algB) 
+        → Hom {sig} V
+      □ : ∀ {sig : Signature} (V : Variety {sig}) → Hom {sig} V
+      -- Σ[ algA ∈ Structure {sig} ] Σ[ algB ∈ Structure {sig} ] 
+      --   let A = asSet (proj₁ algA)
+      --       B = asSet (proj₁ algB)
+      --   in (inVariety {A} {sig} V algA) × (inVariety {B} {sig} V algB) × (Homomorphism {sig} algA algB)
 
     {-- Step 2, define the operators of an abstract category to Hom as carrier--}
-    _ ◁◁ : ∀ {sig : Signature} → {V : Variety {sig}} → Hom {sig} V → Hom {sig} V → Hom {sig} V
-    _ ◁◁ {sig} {V} (algA , algB , (inA , inB , homAB)) = {!!} -- Source of proj_1 homAB
+    _◁◁ : ∀ {sig : Signature} → {V : Variety {sig}} 
+          → Hom {sig} V → Hom {sig} V
+    _◁◁ (□ V) = □ V
+    _◁◁ (H V {algA} {algB} inA inB f) = 
+          H V {algA} {algA} inA inA (source {algA} {algA} f) -- Source of homAB
 
+    -- ◁◁_ : ∀ {sig : Signature} → {V : Variety {sig}} 
+    --       → Hom {sig} V → Hom {sig} V
+    -- ◁◁_ {sig} {V} (algA , algB , (inA , inB , homAB)) = 
+    --       (algB , algB , (inB , inB , idHom {sig} {algB})) -- Source of proj_1 homAB
+
+    -- _∘_ : ∀ {sig : Signature} → {V : Variety {sig}} 
+    --       → Hom {sig} V → Hom {sig} V → Hom {sig} V
+    -- _∘_ {sig} {V} (algA , algB , (inA , inB , g)) (algB' , algC , (inB' , inC , f)) with algB ≡ algB'
+    -- ... | refl = 
+    --       (algA , algC , (inA , inC , {!!} ))
+  

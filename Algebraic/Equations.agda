@@ -23,7 +23,7 @@ module Algebraic.Equations where
     var  : (x : X) →  Formula {sig} X
     op   : (i : (Fin (nOps sig))) 
             → (Vec (Formula {sig} X) (valence sig i))
-            → Formula X
+            → Formula {sig} X
 
   {-- Although this should be a pair-type to match the definition, 
       we use a record to get named fields for easier access. --}
