@@ -9,7 +9,7 @@ open import Data.Fin using (Fin)       -- Fin for indexing --
 -- For helper functions --
 open import Data.List as List using (List; lookup; length)
 
-module Signatures where
+module Algebraic.Signatures where
 
     Signature : Set 
     Signature = Σ[ n ∈ ℕ ] ((Fin n) → (String × ℕ))
