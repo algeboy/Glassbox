@@ -1,4 +1,4 @@
 name: glassbox
 include: .
-depend: standard-library, cubical-0.9
-flags: --cubical --no-import-sorts -WnoUnsupportedIndexedMatch --guardedness
+depend: standard-library
+flags: --guardedness
