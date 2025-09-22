@@ -71,8 +71,8 @@ module Algebraic.Homomorphism where
     {-- source of Homomorphism returns identity on domain --}
     source : ∀ {sig : Signature} {f : ConFun} → Hom {sig} f → Hom {sig} (id-fun f)
     source {sig} null = null
-    source {sig} (NN f A B pA pB pf) = {!!}
-    source {sig} (FF f A B pA pB pf) = {!!}
+    source {sig} (NN f A B pA pB pf) = NN (λ x → x) A A pA pA (λ i x → {!!})
+    source {sig} (FF f A B pA pB pf) = FF (λ x → x) A A pA pA (λ i x → {!!})
     source {sig} (FN f A B pA pB pf) = {!!}
     source {sig} (NF f A B pA pB pf) = {!!}
 
