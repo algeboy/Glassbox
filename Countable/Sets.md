@@ -1,12 +1,12 @@
 # Countable Functions
 
-We describe a type for functions between countable sets.  Because we are making a category we can work up to equivalence so we treat countable functions by their cardinality, specifically $[n]=\{1,\ldots, n\}$ and $\mathbb{N}$, with the empty set as $[0]$.  
+We describe a type for functions between countable sets.  Because we are making a category, we can work up to equivalence, so we treat countable functions by their cardinality.
 
 [ToC]
 
 In order to treat categories as algebraic structures we have a two step process of unifying all morphisms into a single type.
 
-It is highly probably that some of these manipulations can be repeated without the constructs used here more efficiently and generally.  There are two philosophies in our choice.  First we are not native speakers of Agda and therefore are unaware if its many opportunities.  Second, we want to expose the details in a manner that a more novice user such as a member of our own community from Computational Algebra but new to theorem provers can experience some of the learning we have benefited from in creating this prototype.
+It is highly probably that some of these manipulations can be repeated without the constructs used here more efficiently and generally.  There are two philosophies in our choice.  First, we are not native speakers of Agda and therefore are unaware of its many opportunities.  Second, we want to expose the details in a manner that a more novice user such as a member of our own community from Computational Algebra but new to theorem provers can experience some of the learning we have benefited from in creating this prototype.
 
 ## Constructive Sets
 
@@ -16,7 +16,7 @@ First we unify the objects
 ```math
 \text{ConSet} := \{\mathbb{N}\}\sqcup \bigsqcup_{n:\mathbb{N}}[n]
 ```
-There is a problem with using a $\Sigma$ type which is that the terms here are types themselves and thus comparison fall into undecidable territory.  In general comparing $A,B:Type$ as $A=_{Type}B$ is not generally a decidable type and so proof involving valid composition become impossible.  But we are pulling back to specifically constructed set $\mathbb{N}$ and $[n]$ and if we track that information we can in fact decide equality as sets because our constructors have transport and therefore
+There is a problem with using a $\Sigma$ type which is that the terms here are types themselves and thus comparison fall into undecidable territory.  In general, comparing $A,B:Type$ via $A=_{Type}B$ is not generally a decidable type. So a proof involving valid composition of functions becomes impossible in general.  But we are pulling back to specifically constructed set $\mathbb{N}$ and $[n]$. If we keep track of that information, we can in fact decide equality as sets because our constructors have transport and therefore
 ```math
     m=n \to [m]=[n]
 ```
@@ -24,7 +24,11 @@ As all claims are backed by evidence, in Agda this will be developed into a func
 ```agda 
     cong Fin : m ≡ n → (Fin m) ≡ (Fin n)
 ```
-This is a hint of how we should add further data types.  We keep track of their constructors and rely on equality of the introductory data instead of the outcome.  This is notationally awkward and could be done within a programming language.  But exposing things at this level is a helpful observation of the process and avoid various problems that emerge with how Agda and other type checker internally frame their Set types.
+This is a hint of how we should add further data types.  
+
+**We keep track of their constructors and rely on equality of the introductory data instead of the outcome.**  
+
+This is perhaps notationally awkward and could be done within a programming language.  But exposing things at this level is a helpful observation of the process and avoids various problems that emerge with how Agda and other type checker internally frame their Set types.
 
 So we use an inductive type to unify the constructive sets we consider.
 ```agda
@@ -32,21 +36,23 @@ data ConSet where
     N : ConSet
     F : (n : ℕ) → ConSet
 ```
-Note, `ℕ` is a unicode character allowed in Agda but having been imported form the standard library as a natural number type.  We are here wrapping it so we need a new characater `N`.  When building algebraic structures we need to convert `ConSet` into the Agda's types so we use 
+Note, `ℕ` is a unicode character allowed in Agda, but we have it already in use since we imported it from the [standard library](https://github.com/agda/agda-stdlib) as a natural number type.  Here, we are wrapping it, so we need a new characater `N`.  When building algebraic structures, we need to convert `ConSet` into the Agda's types, so we use 
 ```agda
 asSet : ConSet → Set
 asSet N = ℕ
 asSet (F n) = Fin n
 ```
 
-Here is a demonstration of how we can now make a decideable equality on our `ConSet`.
+Here is a demonstration of how one might try to make a decideable equality on `Set`:
 ```agda
 test : (A B : Set) -> Maybe A ≡ B
 test A B with Dec (A ≡ B)
 ...| yes proof = just proof
 ...| no _ = nothing
 ```
-This one does not compile because in general type comparisons are decidable.  Compare this with the following which backtracks through the constructors and compares their state thus being decidable.
+This one does not compile because in general type comparisons are not decidable.  
+
+Compare this with the following which backtracks through the constructors and compares their state. Thus it is decidable.
 ```agda
 isEqual : (A B : ConSet) -> Maybe A ≡ B
 isEqual (F a) (F b) = with a ≟ b
@@ -55,9 +61,9 @@ isEqual (F a) (F b) = with a ≟ b
 isEqual N N = just refl
 isEqual _ _ = nothing
 ```
-Obviously the complexity is in length of code as we now have to carry out all the case distinctions, but mismatches in this case are failures so somewhat manageable.
+Obviously the complexity is in length of code as we now have to carry out all the case distinctions, but mismatches in the cases lead to failures, so it is somewhat manageable.
 
-> **Remark** It may seem ironic that Agda has carefully curated an environment where types are so specific that you cannot even attempt to compose functions with miss-matched types.  Here we are attempting to erase this difference.  This is not without a purpose however.  We are interested in extending composition of functions from partial binary operator to a total operator with an explicit error token.  This allows us to then model the category of sets with varieties rather than quasi-varieties.  This allows us to begin performing computations on categories as algebras in their own right.  As a foundation for mathematics or programming one of course should stick with Agda universes.
+> **Remark** It may seem ironic that Agda has carefully curated an environment where types are so specific that you cannot even attempt to compose functions with mismatched types.  Here, we are attempting to erase this difference but not without a purpose however.  We are interested in extending composition of functions from the *partial* binary operator to a *total* binary operator with an explicit error token.  This allows us to then model the category of sets within a variety rather than in a quasi-variety.  This allows us to begin performing computations on categories as algebras in their own right.  As a foundation for mathematics or programming one of course should stick with Agda universes.
 
 ### Expanding the constructive sets.
 
@@ -92,7 +98,7 @@ The morphisms are thus unified as well.
 \{f:[m]\to [n]\}
 \end{array}
 ```
-We develop this as a further inductive type.  Anticipating that composition is a partial function which we want to explicitly make total we add an error marker.  (Note Agda uses $\bot$ for its void type and while not in scope it is still too common to find exercises and help in agda with this assigned role so it is safer to introduce a different symbol `▦` for error marking.)
+We develop this as a further inductive type.  Anticipating that composition is a partial function that we want to explicitly make total, we add an error marker.  (Note Agda uses $\bot$ for its void type, and although it is not in our scope, it is still too common to find exercises and help in agda with this assigned role, so it is safer from our perspective to introduce a different symbol `▦` for error marking.)
 ```agda
 data ConFun : Set where
     ℕ←ℕ : (f : ℕ → ℕ) → ConFun
@@ -134,11 +140,11 @@ We can also place errors where we know the composition is illegal, such as `N` m
     ...
     _←_ (F←F g) (ℕ←F f) = ▦
 ```
-In actuality as reading convenience we can place these at the end as the default case
+As a convenience, we omit all of these nonsense cases by setting the default to return our error:
 ```agda
     _←_ _ _ = ▦
 ```
-So now let us look at the places we need to decide on composability.  These occur when two `F` `F` meet in the middle as now we have a parameter to compare.  Recall we have transport
+So now let us look at the places we need to decide on composability.  These occur when two `F` `F` meet in the middle since we have a parameter to compare.  Recall we have transport:
 ```agda
     cong Fin : m ≡ n → (Fin m) ≡ (Fin n)
 ```
@@ -148,13 +154,13 @@ And `m ≡ n` is decidable via `m ≟ n`.  So we just need to pass along the evi
     ... | yes p = F←F (g ∘ subst Fin p ∘ f)
     ... | no _ = ▦
 ```
-Here is a bit of Agda related notation.  Notice that the evidence that $b=c$ is decided at the function call.  Agda therefore breaks into two cases anticipating the possible outcomes.  When they are equal we have nevertheless not told all types about the equality.  What we have instead are
+We explain a bit of the Agda notation.  Notice that the evidence that $b=c$ is decided at the function call.  Agda therefore breaks into two cases anticipating the possible outcomes (i.e. `yes` or `no`).  When $b=c$, we have not told all the types about the equality.  What we have is
 ```agda 
-g : (Fin a) → (Fin b)
+f : (Fin a) → (Fin b)
 g : (Fin c) → (Fin d)
 p : b ≡ c
 ```
-The intuition of the next stage of the proof is perhaps clear: transport the proof that $b=c$ to make `Fin b ≡ Fin c`, but this still has to be used to transport `g` from `(Fin c) → (Fin d)` to `(Fin b) → (Fin d)` via the evidence `cong Fin p : Fin b ≡ Fin c`.  Agda has built in functions to do this transporting `subst Finp` which is syntaticaly placed between the composition of `g` after `f`.  Hence the syntax of our solution.
+The intuition of the next stage of the proof is perhaps clear: transport the proof that $b=c$ to make `Fin b ≡ Fin c`, but this still has to be used to transport `g` from `(Fin c) → (Fin d)` to `(Fin b) → (Fin d)` via the evidence `cong Fin p : Fin b ≡ Fin c`.  Agda has built in functions to do this transporting `subst Fin p` which is syntatically placed between the composition of `g` after `f`.  Hence the syntax of our solution.
 
 There are 4 cases with `F` in the middle and they all follow this pattern.  Here is the complete type.
 ```agda
@@ -191,7 +197,8 @@ Here we can test our composition on the functions created.  Try some others.
 Note that this case is in fact going through the tough case where we have forgotten the middle `Fin 4` identical in a way that Agda can be certain.
 
 ### Heteromorphism property
-In order to form proofs of the axioms of a category we will need to relate the composition as Agda functions with the composition as `ConFun`.  The fundamental extension is that we have make illegal compositions legal via the error tag.  However in Agda illegal compositions do not compile.  Therefore must form the claims of compatibility only partial.
+
+In order to form proofs of the axioms of a category, we will need to relate the composition as Agda functions with the composition as `ConFun`.  The fundamental extension is that we have make illegal compositions legal via the error tag.  However in Agda illegal compositions do not compile.  Therefore must form the claims of compatibility only partial.
 
 Let us begin by reflecting the state independent cases.  These can appeal to `refl` as proof because they simply use pattern matching and reduce both sides to the same normal form.  For example,
 ```agda
