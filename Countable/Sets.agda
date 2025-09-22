@@ -1,5 +1,7 @@
 open import Agda.Primitive using (Level; lzero; lsuc; _⊔_; Set)
 open import Data.Empty using (⊥-elim)
+open import Data.Maybe using (Maybe; just; nothing)
+open import Data.Product using (Σ; Σ-syntax; _,_; proj₁; proj₂)
 
 open import Data.Nat using (ℕ; _≟_)
 open import Data.Fin using (Fin)
@@ -41,6 +43,13 @@ module Countable.Sets where
         ℕ←F : ∀ {n : ℕ} → (f : (Fin n) → ℕ) → ConFun
         ℕ←ℕ : (f : ℕ → ℕ) → ConFun
         ▦ : ConFun
+
+    asFun : ConFun → Maybe (Σ[ A ∈ Set ] Σ[ B ∈ Set ] (A → B))
+    asFun (F←F {m} {n} f) = just (Fin m , Fin n , f)
+    asFun (F←ℕ {n} f) = just (ℕ , Fin n , f)
+    asFun (ℕ←F {n} f) = just (Fin n , ℕ , f)
+    asFun (ℕ←ℕ f) = just (ℕ , ℕ , f)
+    asFun ▦ = nothing
 
     -----------------------------------------------------
     --- Make a micro universe tower.                  ---

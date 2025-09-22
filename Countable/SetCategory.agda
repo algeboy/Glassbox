@@ -11,7 +11,7 @@ open import Relation.Binary.PropositionalEquality using (refl; subst; _≡_; con
 open import Relation.Nullary using (yes; no; Dec)
 open import Axiom.Extensionality.Propositional using (Extensionality)
 
-open import Function using (_∘_; id)
+-- open import Function using (_∘_; id)
 
 
 open import Algebraic.Signatures
@@ -82,3 +82,7 @@ module Countable.SetCategory where
         helper i8  const₁ = λ const₂ → tgtCompProof (const₂ (# 0)) (const₂ (# 1))  -- 8: codomainCompLaw: ◁ (f · g) = ◁ (f · (◁ g))
         helper i9  const₁ = λ const₂ → srcCompProof (const₂ (# 0)) (const₂ (# 1))  -- 9: domainCompLaw: (f · g) ◁ = ((f ◁) · g) ◁
         helper i10 const₁ = λ const₂ → ∘-assoc (const₂ (# 0)) (const₂ (# 1)) (const₂ (# 2))  -- 10: assocLaw: f · (g · h) = (f · g) · h
+
+
+
+    

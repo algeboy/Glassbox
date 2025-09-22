@@ -20,7 +20,7 @@ open import Function using (_∘_; id)
 
 open import Algebraic.Signatures
 open import Countable.Sets
-open import Algebraic.Structures
+
 
 
 
