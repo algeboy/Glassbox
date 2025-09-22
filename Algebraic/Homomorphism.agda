@@ -1,4 +1,5 @@
 
+open import Agda.Primitive using (Set)
 open import Data.Empty using (⊥-elim)
 
 open import Data.Nat using (ℕ)
@@ -17,6 +18,22 @@ open import Algebraic.Structures
 {-- A minimal countable constructive set theory. --}
 module Algebraic.Homomorphism where
 
+    test : (A B : Set) -> Maybe A ≡ B
+    test A B with Dec (A ≡ B)
+    ...| yes proof = just proof
+    ...| no _ = nothing
+
+    {-- Sub categories are implemented as guards --}
+    IsHom : (f : ConFun) 
+            → ( A B : Structure {sig} ) 
+            → ( p : (f ◄) = id A )
+            → ( q : (◄ f) = id B )
+            → ( p : ¬( f = ▦ ) ) 
+            → (i : Fin (nOps sig)) 
+            → (x : Vec (asSet A) (proj₂ (proj₂ sig i))) →
+            f (opsA i x) ≡ opsB i (map f x)
+
+
     HomProof : ∀ {sig : Signature} {A B : Structure {sig}} 
             → (f : asSet (proj₁ A) → asSet (proj₁ B)) 
             → Set
@@ -25,12 +42,21 @@ module Algebraic.Homomorphism where
         (x : Vec (asSet A) (proj₂ (proj₂ sig i))) →
             f (opsA i x) ≡ opsB i (map f x)
 
-    makeHom-FF : ∀ {sig : Signature}
-                → (A B : Structure {sig} ) 
-                → (f : Fin a → Fin b ) 
-                → (isHom : HomProof {sig} A B f)
+    
+
+    asHom-FF : ∀ {sig : Signature} {a b : ℕ}
+                → (A : Structure {sig} ) 
+                → (B : Structure {sig} ) 
+                → {pA : proj₁ A ≡ F a}
+                → {pB : proj₁ B ≡ F b}
+                → (f : asSet (proj₁ A) → asSet (proj₁ B)) 
+                → (isHom : HomProof {sig} {A} {B} f)
                 → ConFun
-    makeHom-FF (F a , opsA) (F b , opsB) f = F←F {a} {b} f
+    asHom-FF (F a , opsA) (F b , opsB) {refl} {refl} f isHom  = F←F {a} {b} f
+
+    {-- Operators on Hom --}
+
+
 
     -- {-- This is Definition 3.?? : Homomorphism --}
     -- Homomorphism : ∀ {sig : Signature} → Set

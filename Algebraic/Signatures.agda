@@ -1,6 +1,7 @@
 -- -----------------------------------------------------------------------------
 -- Signatures
 -- -----------------------------------------------------------------------------
+open import Agda.Primitive using (Set)
 open import Data.Product using (Σ; Σ-syntax; _×_; _,_; proj₁; proj₂)     -- Dependent types --
 open import Data.String using (String) -- Strings for operator names --
 open import Data.Nat using (ℕ)         -- Nats for valence --

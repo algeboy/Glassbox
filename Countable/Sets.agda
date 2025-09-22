@@ -1,4 +1,4 @@
-open import Agda.Primitive using (Level; lzero; lsuc; _⊔_)
+open import Agda.Primitive using (Level; lzero; lsuc; _⊔_; Set)
 open import Data.Empty using (⊥-elim)
 
 open import Data.Nat using (ℕ; _≟_)
@@ -7,7 +7,7 @@ open import Data.Fin using (Fin)
 
 open import Relation.Binary.PropositionalEquality using (refl; subst; _≡_; cong; sym; trans; subst-∘)
 open import Relation.Nullary using (yes; no; Dec)
-open import Axiom.Extensionality.Propositional using (Extensionality)
+-- open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import Function using (_∘_; id)
 
@@ -15,11 +15,6 @@ open import Function using (_∘_; id)
 {-- A minimal countable constructive set theory. --}
 module Countable.Sets where
 
-    -- data Lift (ℓ : Level) (A : Set ℓ) : Set (lsuc ℓ) where
-    --   lift : A → Lift ℓ A
-
-    -- lower : ∀ {ℓ} {A : Set ℓ} → Lift ℓ A → A
-    -- lower (lift x) = x
 
     data ConSet : Set where 
         N : ConSet
@@ -113,10 +108,10 @@ module Countable.Sets where
     isHom-ℕℕF {a} g f = refl
 
     -- Transport along different proofs b ≡ c is pointwise equal for Fin
-    -- Uses UIP?  Would be ok in HoTT if h-level 1.
-    transport-uniq-Fin : ∀ {b c : ℕ} (p q : b ≡ c) (x : Fin b)
-                       → subst Fin q x ≡ subst Fin p x
-    transport-uniq-Fin refl refl x = refl
+    -- This requires UIP (Uniqueness of Identity Proofs)
+    postulate
+        transport-uniq-Fin : ∀ {b c : ℕ} (p q : b ≡ c) (x : Fin b)
+                           → subst Fin q x ≡ subst Fin p x
 
     -- Function extensionality assumption 
     -- i.e. tell Agda what we mean "equal functions" to be. 

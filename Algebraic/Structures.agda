@@ -1,4 +1,5 @@
 
+open import Agda.Primitive using (Set)
 open import Data.Empty using (⊥-elim)
 
 open import Data.Nat using (ℕ)
