@@ -10,18 +10,11 @@ open import Data.Vec using (Vec; map)
 
 open import Relation.Binary.PropositionalEquality using ( _≡_ )
 
-
+open import Algebraic.Signatures
 open import Countable.Sets
 
 {-- A minimal countable constructive set theory. --}
 module Algebraic.Structures where
-
-    {-- Signature is a countable collection of operators --}
-    Signature : Set 
-    Signature = Σ[ n ∈ ℕ ] ((Fin n) → (String × ℕ))
-
-    nOps : Signature → ℕ
-    nOps sig = proj₁ sig
 
 
     {-- Operator on X a ConSet is function [X]^n→[X] --}
@@ -46,6 +39,9 @@ module Algebraic.Structures where
 
     car₁ : ∀ {sig : Signature} → Structure₁ {sig} → Set
     car₁ (A , opA) = A
+
+    getOp : (sig : Signature) → (A : Structure {sig}) → (i : Fin (nOps sig)) → Operator (proj₁ A) (proj₂ (proj₂ sig i))
+    getOp sig alg i = (proj₂ alg) i
 
     {-- This is Definition 3.?? : Homomorphism --}
     Homomorphism : ∀ {sig : Signature} → Structure {sig} → Structure {sig} → Set
