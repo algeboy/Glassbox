@@ -3,7 +3,7 @@
 [ToC]
 
 ## Signatures
-We begin with a signature.  For code we assume operators are given by string names and for simplicity we assume a prefix grammar with parentheses instead of order of operations.  So we need to capture just the name and the valence.
+We begin with a signature.  For code we assume operators are given by string names and for simplicity we assume a prefix grammar with parentheses instead of order of operations.  So we need to capture just the name and the valence. A **signature** is thus 
 ```math
 \Omega:\bigsqcup_{n:\mathbb{N}} ([n]\to \text{String}\times \mathbb{N})
 ```
@@ -22,13 +22,13 @@ MonoidSig = (2 , λ i → Vec.lookup operations i)
     operations = ("1" , 0) ∷ ("·" , 2) ∷ []
 ```
 ## Operators and algebraic structures
-An algebraic structure has an implicit signature $\Omega$, a carrier set $X$, and a function that matches each operator $\langle \omega, n\rangle :\Omega$ with an function $X^{n}\to X$.
+An algebraic structure has an implicit signature $\Omega$, a carrier set $X$, and a function that matches each operator $\langle \omega, n\rangle :\Omega$ with an function $X^{n}\to X$. We write $\pi_1(\langle\omega,n\rangle) := \omega$ and $\pi_2(\langle \omega, n\rangle) := n$. Thus, an **algebraic structure** is a term of type
 ```math
 \bigsqcup_{X:Set}\bigsqcup_{\omega:\Omega}(X^{\pi_2(\omega)}\to X)
 ```
 Now in the code $\Omega$ is not a set but a function on a range $[n]$.  So we do the same with the algebraic structure.
 ```math
-\bigsqcup_{X:Set}\prod_{i:[n]}(X^{\pi_2(\Omega[i])}\to X)
+\mathrm{Alge}_{\Omega} := \bigsqcup_{X:Set}\prod_{i:[n]}(X^{\pi_2(\Omega[i])}\to X)
 ```
 In Agda we split out an operator type and then make the above type.
 ```agda
