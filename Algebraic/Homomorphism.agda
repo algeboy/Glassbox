@@ -21,14 +21,6 @@ open import Algebraic.Structures
 {-- A minimal countable constructive set theory. --}
 module Algebraic.Homomorphism where
 
-    -- Identity functions for different ConFun types
-    id-fun : ConFun → ConFun
-    id-fun ▦ = ▦
-    id-fun (ℕ←ℕ f) = ℕ←ℕ (λ x → x)
-    id-fun (F←F {a} {b} f) = F←F {a} {a} (λ x → x)
-    id-fun (F←ℕ {a} f) = ℕ←ℕ (λ x → x)
-    id-fun (ℕ←F {a} f) = F←F {a} {a} (λ x → x)
-
     {-- Homomorphisms as a subcategory --}
 
     data Hom {sig : Signature} : ConFun → Set where
@@ -69,12 +61,20 @@ module Algebraic.Homomorphism where
 
 
     {-- source of Homomorphism returns identity on domain --}
-    source : ∀ {sig : Signature} {f : ConFun} → Hom {sig} f → Hom {sig} (id-fun f)
+    source : ∀ {sig : Signature} {f : ConFun} → Hom {sig} f → Hom {sig} (f ◄)
     source {sig} null = null
     source {sig} (NN f A B pA pB pf) = NN (λ x → x) A A pA pA (λ i x → {!!})
     source {sig} (FF f A B pA pB pf) = FF (λ x → x) A A pA pA (λ i x → {!!})
-    source {sig} (FN f A B pA pB pf) = {!!}
-    source {sig} (NF f A B pA pB pf) = {!!}
+    source {sig} (FN f A B pA pB pf) = NN (λ x → x) A A pA pA (λ i x → {!!})
+    source {sig} (NF f A B pA pB pf) = FF (λ x → x) A A pA pA (λ i x → {!!})
+
+    {-- target of Homomorphism returns identity on codomain --}
+    target : ∀ {sig : Signature} {f : ConFun} → Hom {sig} f → Hom {sig} (◄ f)
+    target {sig} null = null
+    target {sig} (NN f A B pA pB pf) = NN (λ x → x) B B pB pB (λ i x → {!!})
+    target {sig} (FF f A B pA pB pf) = FF (λ x → x) B B pB pB (λ i x → {!!})
+    target {sig} (FN f A B pA pB pf) = FF (λ x → x) B B pB pB (λ i x → {!!})
+    target {sig} (NF f A B pA pB pf) = NN (λ x → x) B B pB pB (λ i x → {!!})
 
 
     -- {-- target of Homomorphism returns identity on codomain --}
