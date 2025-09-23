@@ -1,4 +1,4 @@
 name: glassbox
 include: .
 depend: standard-library
-flags: --guardedness
+flags: --guardedness -WnoUnsupportedIndexedMatch

@@ -2,16 +2,17 @@
 open import Agda.Primitive using (Set)
 open import Data.Empty using (⊥-elim)
 
-open import Data.Nat using (ℕ)
+open import Data.Nat using (ℕ; _≟_)
 open import Data.Fin using (Fin)
 open import Data.Product using (Σ; Σ-syntax; _,_; _×_; proj₁; proj₂)
 open import Data.String using (String)
 open import Data.Vec using (Vec; map)
-open import Data.Vec.Properties using (map-id)
+open import Data.Vec.Properties using (map-id; map-cong)
 
 open import Function using (_|>_)
-open import Relation.Binary.PropositionalEquality using ( _≡_; refl; subst; sym; trans )
+open import Relation.Binary.PropositionalEquality using ( _≡_; refl; subst; sym; trans; cong )
 open import Relation.Binary.PropositionalEquality.Properties using ( subst-sym-subst )
+open import Relation.Nullary using (yes; no)
 open import Axiom.Extensionality.Propositional using ( Extensionality )
 
 open import Algebraic.Signatures
@@ -23,70 +24,107 @@ module Algebraic.Homomorphism where
 
     {-- Homomorphisms as a subcategory --}
 
-    data Hom {sig : Signature} : ConFun → Set where
-        null : Hom ▦
-        NN : (f : ℕ → ℕ) → (A B : Structure {sig}) → 
+    data Hom {sig : Signature} : Set where
+        null : (cf : ConFun) → (p : cf ≡ ▦) → Hom
+        
+        NN : (cf : ConFun) → (f : ℕ → ℕ) → (p : cf ≡ ℕ←ℕ f) → (A B : Structure {sig}) → 
              (pA : proj₁ A ≡ N) → (pB : proj₁ B ≡ N) →
              ((i : Fin (nOps sig)) →
                  (x : Vec (asSet (proj₁ A)) (proj₂ (proj₂ sig i))) →
                      subst asSet (sym pB) (f (subst asSet pA (proj₂ A i x))) ≡ 
                      proj₂ B i (map (λ y → subst asSet (sym pB) (f (subst asSet pA y))) x)
-             ) → Hom (ℕ←ℕ f)
+             ) → Hom
 
-        FF : {a b : ℕ} → (f : Fin a → Fin b) → (A B : Structure {sig}) → 
+        FF : (cf : ConFun) → {a b : ℕ} → (f : Fin a → Fin b) → (p : cf ≡ F←F {a} {b} f) → (A B : Structure {sig}) → 
              (pA : proj₁ A ≡ F a) → (pB : proj₁ B ≡ F b) →
              ((i : Fin (nOps sig)) →
                  (x : Vec (asSet (proj₁ A)) (proj₂ (proj₂ sig i))) →
                      subst asSet (sym pB) (f (subst asSet pA (proj₂ A i x))) ≡ 
                      proj₂ B i (map (λ y → subst asSet (sym pB) (f (subst asSet pA y))) x)
-             ) → Hom (F←F {a} {b} f)
+             ) → Hom
         
-        FN : {a : ℕ} → (f : ℕ → Fin a) → (A B : Structure {sig}) → 
+        FN : (cf : ConFun) → {a : ℕ} → (f : ℕ → Fin a) → (p : cf ≡ F←ℕ {a} f) → (A B : Structure {sig}) → 
              (pA : proj₁ A ≡ N) → (pB : proj₁ B ≡ F a) →
              ((i : Fin (nOps sig)) →
                  (x : Vec (asSet (proj₁ A)) (proj₂ (proj₂ sig i))) →
                      subst asSet (sym pB) (f (subst asSet pA (proj₂ A i x))) ≡ 
                      proj₂ B i (map (λ y → subst asSet (sym pB) (f (subst asSet pA y))) x)
-             ) → Hom (F←ℕ {a} f)
+             ) → Hom
         
-        NF : {a : ℕ} → (f : Fin a → ℕ) → (A B : Structure {sig}) → 
+        NF : (cf : ConFun) → {a : ℕ} → (f : Fin a → ℕ) → (p : cf ≡ ℕ←F {a} f) → (A B : Structure {sig}) → 
              (pA : proj₁ A ≡ F a) → (pB : proj₁ B ≡ N) →
              ((i : Fin (nOps sig)) →
                  (x : Vec (asSet (proj₁ A)) (proj₂ (proj₂ sig i))) →
                      subst asSet (sym pB) (f (subst asSet pA (proj₂ A i x))) ≡ 
                      proj₂ B i (map (λ y → subst asSet (sym pB) (f (subst asSet pA y))) x)
-             ) → Hom (ℕ←F {a} f)
+             ) → Hom
         
 
 
 
     {-- source of Homomorphism returns identity on domain --}
-    source : ∀ {sig : Signature} {f : ConFun} → Hom {sig} f → Hom {sig} (f ◄)
-    source {sig} null = null
-    source {sig} (NN f A B pA pB pf) = NN (λ x → x) A A pA pA (λ i x → {!!})
-    source {sig} (FF f A B pA pB pf) = FF (λ x → x) A A pA pA (λ i x → {!!})
-    source {sig} (FN f A B pA pB pf) = NN (λ x → x) A A pA pA (λ i x → {!!})
-    source {sig} (NF f A B pA pB pf) = FF (λ x → x) A A pA pA (λ i x → {!!})
+    _◄◄ : ∀ {sig : Signature} → Hom {sig} → Hom {sig}
+    _◄◄  {sig} (null cf p) = null (cf ◄) (trans (cong _◄ p) refl)
+    _◄◄  {sig} (NN cf f p A B pA pB pf) = NN (cf ◄) (λ x → x) (trans (cong _◄ p) refl) A A pA pA (λ i x → {!!})
+    _◄◄  {sig} (FF cf f p A B pA pB pf) = FF (cf ◄) (λ x → x) (trans (cong _◄ p) refl) A A pA pA (λ i x → {!!})
+    _◄◄  {sig} (FN cf f p A B pA pB pf) = NN (cf ◄) (λ x → x) (trans (cong _◄ p) refl) A A pA pA (λ i x → {!!})
+    _◄◄  {sig} (NF cf f p A B pA pB pf) = FF (cf ◄) (λ x → x) (trans (cong _◄ p) refl) A A pA pA (λ i x → {!!})
 
     {-- target of Homomorphism returns identity on codomain --}
-    target : ∀ {sig : Signature} {f : ConFun} → Hom {sig} f → Hom {sig} (◄ f)
-    target {sig} null = null
-    target {sig} (NN f A B pA pB pf) = NN (λ x → x) B B pB pB (λ i x → {!!})
-    target {sig} (FF f A B pA pB pf) = FF (λ x → x) B B pB pB (λ i x → {!!})
-    target {sig} (FN f A B pA pB pf) = FF (λ x → x) B B pB pB (λ i x → {!!})
-    target {sig} (NF f A B pA pB pf) = NN (λ x → x) B B pB pB (λ i x → {!!})
+    ◄◄_ : ∀ {sig : Signature} → Hom {sig} → Hom {sig}
+    ◄◄_ {sig} (null cf p) = null (◄ cf) (trans (cong (◄_) p) refl)
+    ◄◄_ {sig} (NN cf f p A B pA pB pf) = NN (◄ cf) (λ x → x) (trans (cong (◄_) p) refl) B B pB pB (λ i x → {!!})
+    ◄◄_ {sig} (FF cf f p A B pA pB pf) = FF (◄ cf) (λ x → x) (trans (cong (◄_) p) refl) B B pB pB (λ i x → {!!})
+    ◄◄_ {sig} (FN cf f p A B pA pB pf) = FF (◄ cf) (λ x → x) (trans (cong (◄_) p) refl) B B pB pB (λ i x → {!!})
+    ◄◄_ {sig} (NF cf f p A B pA pB pf) = NN (◄ cf) (λ x → x) (trans (cong (◄_) p) refl) B B pB pB (λ i x → {!!})
 
-
-    -- {-- target of Homomorphism returns identity on codomain --}
-    -- target : ∀ {sig : Signature} {A B : Structure {sig}} → Homomorphism {sig} A B → Homomorphism {sig} B B
-    -- target {sig} {A} {B} (f , pf) = idHom {sig} {B} 
-
-    -- {-- Composition of homomorphisms --}
-    -- _∘_ : ∀ {sig : Signature} {A B C : Structure {sig}} 
-    --       → Homomorphism {sig} B C 
-    --       → Homomorphism {sig} A B
-    --       → Homomorphism {sig} A C
-    -- _∘_ {sig} {A} {B} {C} (g , pfG) (f , pfF) = (g ← f , {!!})
+    {-- Composition of homomorphisms --}
+    _∘_ : ∀ {sig : Signature} → Hom {sig} → Hom {sig} → Hom {sig}
+    -- null cases
+    _∘_ {sig} (null cf₁ p₁) (null cf₂ p₂) = null ▦ refl
+    _∘_ {sig} (null cf₁ p₁) (NN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (null cf₁ p₁) (FF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (null cf₁ p₁) (FN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (null cf₁ p₁) (NF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    
+    -- NN cases
+    _∘_ {sig} (NN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (null cf₂ p₂) = null ▦ refl
+    _∘_ {sig} (NN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (NN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) 
+        = NN (cf₁ ← cf₂) (λ x → f₁ (f₂ x)) {!!} A₂ B₁ pA₂ pB₁ (λ i x → {!!})
+    _∘_ {sig} (NN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (NN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (NN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (NF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) 
+        = NF (cf₁ ← cf₂) (λ x → f₁ (f₂ x)) {!!} A₂ B₁ pA₂ pB₁ (λ i x → {!!})
+    
+    -- FF cases  
+    _∘_ {sig} (FF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (null cf₂ p₂) = null ▦ refl
+    _∘_ {sig} (FF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (NN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} 
+        (FF cf₁ {a₁} {b₁} f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) 
+        (FF cf₂ {a₂} {b₂} f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) 
+        with b₂ ≟ a₁
+    _∘_ {sig} (FF cf₁ {a₁} {b₁} f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FF cf₂ {a₂} {.a₁} f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) | yes refl = 
+        FF (cf₁ ← cf₂) (λ x → f₁ (f₂ x)) {!!} A₂ B₁ pA₂ pB₁ (λ i x → {!!})
+    _∘_ {sig} (FF cf₁ {a₁} {b₁} f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FF cf₂ {a₂} {b₂} f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) | no ¬eq = 
+        null ▦ refl
+    _∘_ {sig} (FF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (FF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (NF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    
+    -- FN cases
+    _∘_ {sig} (FN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (null cf₂ p₂) = null ▦ refl
+    _∘_ {sig} (FN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (NN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) 
+        = FN (cf₁ ← cf₂) (λ x → f₁ (f₂ x)) {!!} A₂ B₁ pA₂ pB₁ (λ i x → {!!})
+    _∘_ {sig} (FN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (FN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (FN cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (NF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) 
+        = FF (cf₁ ← cf₂) (λ x → f₁ (f₂ x)) {!!} A₂ B₁ pA₂ pB₁ (λ i x → {!!})
+    
+    -- NF cases
+    _∘_ {sig} (NF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (null cf₂ p₂) = null ▦ refl
+    _∘_ {sig} (NF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (NN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (NF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (NF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (FN cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
+    _∘_ {sig} (NF cf₁ f₁ p₁ A₁ B₁ pA₁ pB₁ pf₁) (NF cf₂ f₂ p₂ A₂ B₂ pA₂ pB₂ pf₂) = null ▦ refl
 
     {-- Test Cases --}
     
@@ -111,6 +149,6 @@ module Algebraic.Homomorphism where
         idFun x = x
         
         -- Test that we can construct a homomorphism
-        test-hom : Hom {testSig} (ℕ←ℕ idFun)
-        test-hom = NN idFun ℕ-struct ℕ-struct2 refl refl 
+        test-hom : Hom {testSig}
+        test-hom = NN (ℕ←ℕ idFun) idFun refl ℕ-struct ℕ-struct2 refl refl 
                    (λ i → λ { (x ∷ y ∷ []) → refl })
