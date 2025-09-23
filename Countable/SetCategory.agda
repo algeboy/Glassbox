@@ -34,8 +34,8 @@ module Countable.SetCategory where
 
     -- TBD: should this signature belong in some general category module?
 
-    SetCat : Structure₁ {AbsCatSig}
-    SetCat = (ConFun , ops )
+    SetCatStruct : ACatStruct 
+    SetCatStruct = (ConFun , ops )
         where
         ops : (i : Fin 4) → (Operator₁ ConFun (proj₂ (proj₂ AbsCatSig i)))
         ops Fin.zero = λ _ → ▦        -- identity element (valence 0)
@@ -53,7 +53,7 @@ module Countable.SetCategory where
             tgtConFun (f ∷ []) = ◄ f
 
     -- SetCat satisfies all the abstract category laws
-    certifySetCat :  inVariety₁ {ConFun} {AbsCatSig} AbsCatLaws SetCat
+    certifySetCat : inVariety₁ {ConFun} {AbsCatSig} AbsCatLaws SetCatStruct
     certifySetCat const i = helper i const
       where
         -- THIS IS A HACK TO GET AROUND THE LACK OF DEPENDENT PATTERN MATCHING
@@ -70,7 +70,7 @@ module Countable.SetCategory where
         pattern i9 = Fin.suc i8
         pattern i10 = Fin.suc i9
 
-        helper : (i : Fin 11) → (const : Fin 3 → ConFun) → SatEqProp₁ {Fin 3} {AbsCatSig} SetCat (proj₂ (proj₂ (proj₂ AbsCatLaws) i))
+        helper : (i : Fin 11) → (const : Fin 3 → ConFun) → SatEqProp₁ {Fin 3} {AbsCatSig} SetCatStruct (proj₂ (proj₂ (proj₂ AbsCatLaws) i))
         helper i0  const₁ = λ const₂ → leftSinkCompProof (const₂ (# 1))     -- 0: leftSinkCompLaw: □ · g = □
         helper i1  const₁ = λ const₂ → rightSinkCompProof (const₂ (# 0))    -- 1: rightSinkCompLaw: f · □ = □
         helper i2  const₁ = λ const₂ → sinkSrcProof                         -- 2: sinkSrcLaw: □ ◁ = □
@@ -83,6 +83,7 @@ module Countable.SetCategory where
         helper i9  const₁ = λ const₂ → srcCompProof (const₂ (# 0)) (const₂ (# 1))  -- 9: domainCompLaw: (f · g) ◁ = ((f ◁) · g) ◁
         helper i10 const₁ = λ const₂ → ∘-assoc (const₂ (# 0)) (const₂ (# 1)) (const₂ (# 2))  -- 10: assocLaw: f · (g · h) = (f · g) · h
 
-
+    SetCat : ACat
+    SetCat = (SetCatStruct , certifySetCat )
 
     

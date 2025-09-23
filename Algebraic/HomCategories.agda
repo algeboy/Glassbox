@@ -36,8 +36,8 @@ open import Algebraic.Homomorphism
 module Algebraic.HomCategories where
 
 
-    HomCat : (sig : Signature ) → Structure₁ {AbsCatSig}
-    HomCat sig = (Hom {sig} , ops )
+    HomCatStruct : (sig : Signature ) → ACatStruct
+    HomCatStruct sig = (Hom {sig} , ops )
         where
         ops : (i : Fin 4) → (Operator₁ (Hom {sig}) (proj₂ (proj₂ AbsCatSig i)))
         ops Fin.zero = λ _ → null ▦ refl        -- identity element (valence 0)
@@ -55,7 +55,7 @@ module Algebraic.HomCategories where
             tgtConFun (f ∷ []) = ◄◄ f
 
     -- HomCat satisfies all the abstract category laws
-    certifyHomCat : (sig : Signature) → inVariety₁ {Hom {sig}} {AbsCatSig} AbsCatLaws (HomCat sig)
+    certifyHomCat : (sig : Signature) → inVariety₁ {Hom {sig}} {AbsCatSig} AbsCatLaws (HomCatStruct sig)
     certifyHomCat sig const i = helper i const
       where
         -- THIS IS A HACK TO GET AROUND THE LACK OF DEPENDENT PATTERN MATCHING
@@ -72,7 +72,7 @@ module Algebraic.HomCategories where
         pattern i9 = Fin.suc i8
         pattern i10 = Fin.suc i9
 
-        helper : (i : Fin 11) → (const : Fin 3 → Hom {sig}) → SatEqProp₁ {Fin 3} {AbsCatSig} (HomCat sig) (proj₂ (proj₂ (proj₂ AbsCatLaws) i))
+        helper : (i : Fin 11) → (const : Fin 3 → Hom {sig}) → SatEqProp₁ {Fin 3} {AbsCatSig} (HomCatStruct sig) (proj₂ (proj₂ (proj₂ AbsCatLaws) i))
         helper i0  const₁ = λ const₂ → {!!}     -- 0: leftSinkCompLaw: □ · g = □
         helper i1  const₁ = λ const₂ → {!!}     -- 1: rightSinkCompLaw: f · □ = □
         helper i2  const₁ = λ const₂ → {!!}     -- 2: sinkSrcLaw: □ ◁ = □
@@ -86,5 +86,6 @@ module Algebraic.HomCategories where
         helper i10 const₁ = λ const₂ → {!!}     -- 10: assocLaw: f · (g · h) = (f · g) · h
 
 
-
+    HomCat : (sig : Signature) → ACat
+    HomCat sig = (HomCatStruct sig , certifyHomCat sig )
     
