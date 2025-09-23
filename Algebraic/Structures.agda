@@ -1,4 +1,5 @@
 
+-- open import Agda.Primitive using (Set)
 open import Data.Empty using (⊥-elim)
 
 open import Data.Nat using (ℕ)
@@ -43,7 +44,13 @@ module Algebraic.Structures where
     getOp : (sig : Signature) → (A : Structure {sig}) → (i : Fin (nOps sig)) → Operator (proj₁ A) (proj₂ (proj₂ sig i))
     getOp sig alg i = (proj₂ alg) i
 
-    {-- This is Definition 3.?? : Homomorphism --}
+    {-- Identity homomorphisms --}
+    id : ∀ {sig : Signature} → (A : Structure {sig}) → ConFun
+    id {sig} (N , ops) = ℕ←ℕ (λ x → x)
+    id {sig} (F a , ops) = F←F {a} {a} (λ x → x)
+
+
+
     Homomorphism : ∀ {sig : Signature} → Structure {sig} → Structure {sig} → Set
     Homomorphism {sig} (A , opsA) (B , opsB) = 
         Σ[ f ∈ (asSet A → asSet B) ]

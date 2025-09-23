@@ -49,6 +49,25 @@ module Algebraic.AbstractCategory where
     ◁_ t = op (# 3) (t ∷ [])
 
 
+
+    -- Peirce decomposition.
+
+    -- Helper functions for structure operations
+    _◁₁_ : {A : Structure₁ {AbsCatSig}} → car₁ {AbsCatSig} A → car₁ {AbsCatSig} A
+    _◁₁_ {A} x = (proj₂ A) (# 2) (x ∷ [])
+
+    ◁₁_ : {A : Structure₁ {AbsCatSig}} → car₁ {AbsCatSig} A → car₁ {AbsCatSig} A
+    ◁₁_ {A} x = (proj₂ A) (# 3) (x ∷ [])
+
+    leftCoset : ( A : Structure₁ {AbsCatSig} ) → car₁ {AbsCatSig} A → Set
+    leftCoset A f = Σ[ g ∈ car₁ {AbsCatSig} A ] (_◁₁_ {A} g ≡ ◁₁_ {A} f)
+
+    rightCoset : (A : Structure₁ {AbsCatSig}) → car₁ {AbsCatSig} A → Set
+    rightCoset A f = Σ[ g ∈ car₁ {AbsCatSig} A ] (_◁₁_ {A} f ≡ ◁₁_ {A} g)
+
+    homSet : (A : Structure₁ {AbsCatSig}) → car₁ {AbsCatSig} A → car₁ {AbsCatSig} A → Set
+    homSet A f g = Σ[ h ∈ car₁ {AbsCatSig} A ] (_◁₁_ {A} f ≡ ◁₁_ {A} h) × (_◁₁_ {A} h ≡ ◁₁_ {A} g)
+
     -- Variables for composition laws
     X : Set
     X = Fin 3
@@ -121,3 +140,5 @@ module Algebraic.AbstractCategory where
           
         helper : Fin 11 → String × Equation {AbsCatSig} X
         helper i = lookup lawsVector i
+
+  

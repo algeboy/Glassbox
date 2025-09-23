@@ -24,13 +24,13 @@ module AbstractCategories where
 -- Abstract Category Signature
 -- -----------------------------------------------------------------------------
     
-    -- Composition operations: domain (_◄), codomain (◄_), and composition (_·_)
-    catSig : ∀ {ℓ : Level} → Signature {ℓ}
-    catSig = record { name = "src" ; valence = 1 } List.∷
-             record { name = "tgt" ; valence = 1 } List.∷
-             record { name = "comp" ; valence = 2 } List.∷
-             record { name = "null" ; valence = 0 } List.∷
-             List.[]
+-- Composition operations: domain (_◄), codomain (◄_), and composition (_·_)
+catSig : ∀ {ℓ : Level} → Signature {ℓ}
+catSig = record { name = "src" ; valence = 1 } List.∷
+          record { name = "tgt" ; valence = 1 } List.∷
+          record { name = "comp" ; valence = 2 } List.∷
+          record { name = "null" ; valence = 0 } List.∷
+          List.[]
 
 
 -- Define infix operators for readability

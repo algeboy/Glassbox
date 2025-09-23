@@ -3,6 +3,7 @@
 -- That is a fake permission, the unsolved metas are each at the end of proofs of negation
 -- They are not callable.  They are just to make Agda happy.
 
+open import Agda.Primitive using (Set)
 open import Data.Nat using (ℕ; _≟_)
 open import Data.Fin using (Fin)
 open import Data.Product using (_×_; _,_)
@@ -12,20 +13,21 @@ open import Relation.Nullary using (Dec; yes; no)
 open import Data.Empty using (⊥-elim)
 open import Relation.Binary.PropositionalEquality using (refl; subst; _≡_; cong; sym; trans; subst-∘)
 open import Relation.Nullary using (yes; no; Dec)
-open import Axiom.Extensionality.Propositional using (Extensionality)
+-- open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import Function using (_∘_; id)
 
 
 open import Algebraic.Signatures
 open import Countable.Sets
-open import Algebraic.Structures
+
 
 
 
 {-- A minimal countable constructive set category. --}
 module Countable.SetLaws where
 
+    
     {-- Laws --}
     {-- target of source = source --}
     tgtSrcProof : (f : ConFun) → (◄ (f ◄) ≡ (f ◄))
