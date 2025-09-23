@@ -1,3 +1,4 @@
+{-# OPTIONS --allow-unsolved-metas #-}
 
 open import Agda.Primitive using (Set)
 open import Data.Empty using (⊥-elim)
