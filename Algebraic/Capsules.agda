@@ -17,4 +17,6 @@ open import Countable.Sets
 {-- A minimal countable constructive set theory. --}
 module Algebraic.Capsules where
 
-    
+    Capsule : {sig : Signature} → Set
+    Structure {sig} = Σ[ A ∈ ACatStruct ] Σ[ X ∈ ACatStruct ] 
+                    ((_◁ : A → X) → (· : A → X → X) → {! category action + capsule axioms !})
