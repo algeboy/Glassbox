@@ -153,3 +153,84 @@ module Algebraic.Homomorphism where
         test-hom : Hom {testSig}
         test-hom = NN (ℕ←ℕ idFun) idFun refl ℕ-struct ℕ-struct2 refl refl 
                    (λ i → λ { (x ∷ y ∷ []) → refl })
+
+
+    module TestGroup where
+        open import Data.Vec using ([]; _∷_)
+        open import Data.Integer using (ℤ; +_; -_; _+_)
+        open import Data.Fin using (zero; suc)
+        
+        groupSig : Signature
+        groupSig = (3 , λ { zero → ("1", 0) ; (suc zero) → ("⁻¹" , 1) ; (suc (suc zero)) → ("·" , 2) })
+        
+        -- Just hard coding for the moment.
+        -- We create groups Z/4Z and Z/2Z and the homomorphism [x]₄ ↦ [x]₂.
+        
+        -- Integers modulo 4 as a group (using Fin 4)
+        ℤ₄-group : Structure {groupSig}
+        ℤ₄-group = (F 4 , λ { zero → λ { [] → zero }  -- identity is 0
+                            ; (suc zero) → λ { (zero ∷ []) → zero  -- inverse of 0 is 0
+                                             ; ((suc zero) ∷ []) → suc (suc (suc zero))  -- inverse of 1 is 3
+                                             ; ((suc (suc zero)) ∷ []) → suc (suc zero)  -- inverse of 2 is 2
+                                             ; ((suc (suc (suc zero))) ∷ []) → suc zero } -- inverse of 3 is 1
+                            ; (suc (suc zero)) → λ { -- Addition modulo 4
+                                (zero ∷ zero ∷ []) → zero
+                                ; (zero ∷ (suc zero) ∷ []) → suc zero
+                                ; (zero ∷ (suc (suc zero)) ∷ []) → suc (suc zero)
+                                ; (zero ∷ (suc (suc (suc zero))) ∷ []) → suc (suc (suc zero))
+                                ; ((suc zero) ∷ zero ∷ []) → suc zero
+                                ; ((suc zero) ∷ (suc zero) ∷ []) → suc (suc zero)
+                                ; ((suc zero) ∷ (suc (suc zero)) ∷ []) → suc (suc (suc zero))
+                                ; ((suc zero) ∷ (suc (suc (suc zero))) ∷ []) → zero
+                                ; ((suc (suc zero)) ∷ zero ∷ []) → suc (suc zero)
+                                ; ((suc (suc zero)) ∷ (suc zero) ∷ []) → suc (suc (suc zero))
+                                ; ((suc (suc zero)) ∷ (suc (suc zero)) ∷ []) → zero
+                                ; ((suc (suc zero)) ∷ (suc (suc (suc zero))) ∷ []) → suc zero
+                                ; ((suc (suc (suc zero))) ∷ zero ∷ []) → suc (suc (suc zero))
+                                ; ((suc (suc (suc zero))) ∷ (suc zero) ∷ []) → zero
+                                ; ((suc (suc (suc zero))) ∷ (suc (suc zero)) ∷ []) → suc zero
+                                ; ((suc (suc (suc zero))) ∷ (suc (suc (suc zero))) ∷ []) → suc (suc zero)
+                            } })
+        
+        -- Integers modulo 2 as a group (using Fin 2)
+        ℤ₂-group : Structure {groupSig}
+        ℤ₂-group = (F 2 , λ { zero → λ { [] → zero }  -- identity is 0
+                            ; (suc zero) → λ { (x ∷ []) → x }  -- every element is its own inverse in ℤ₂
+                            ; (suc (suc zero)) → λ { (zero ∷ zero ∷ []) → zero
+                                                   ; (zero ∷ (suc zero) ∷ []) → suc zero
+                                                   ; ((suc zero) ∷ zero ∷ []) → suc zero
+                                                   ; ((suc zero) ∷ (suc zero) ∷ []) → zero } })
+        
+        -- Homomorphism from ℤ₄ to ℤ₂ via modulo 2 reduction
+        -- Maps: 0↦0, 1↦1, 2↦0, 3↦1
+        mod2 : Fin 4 → Fin 2
+        mod2 zero = zero                        -- 0 mod 2 = 0
+        mod2 (suc zero) = suc zero              -- 1 mod 2 = 1
+        mod2 (suc (suc zero)) = zero            -- 2 mod 2 = 0
+        mod2 (suc (suc (suc zero))) = suc zero  -- 3 mod 2 = 1
+        
+        ℤ₄→ℤ₂ : Hom {groupSig}
+        ℤ₄→ℤ₂ = FF (F←F mod2) mod2 refl ℤ₄-group ℤ₂-group refl refl
+                (λ { zero → λ { [] → refl }  -- mod2(identity) = identity
+                   ; (suc zero) → λ { (zero ∷ []) → refl  -- mod2(inverse) = inverse ∘ mod2
+                                    ; ((suc zero) ∷ []) → refl
+                                    ; ((suc (suc zero)) ∷ []) → refl
+                                    ; ((suc (suc (suc zero))) ∷ []) → refl }
+                   ; (suc (suc zero)) → λ { -- mod2(x + y) = mod2(x) + mod2(y)
+                       (zero ∷ zero ∷ []) → refl
+                       ; (zero ∷ (suc zero) ∷ []) → refl
+                       ; (zero ∷ (suc (suc zero)) ∷ []) → refl
+                       ; (zero ∷ (suc (suc (suc zero))) ∷ []) → refl
+                       ; ((suc zero) ∷ zero ∷ []) → refl
+                       ; ((suc zero) ∷ (suc zero) ∷ []) → refl
+                       ; ((suc zero) ∷ (suc (suc zero)) ∷ []) → refl
+                       ; ((suc zero) ∷ (suc (suc (suc zero))) ∷ []) → refl
+                       ; ((suc (suc zero)) ∷ zero ∷ []) → refl
+                       ; ((suc (suc zero)) ∷ (suc zero) ∷ []) → refl
+                       ; ((suc (suc zero)) ∷ (suc (suc zero)) ∷ []) → refl
+                       ; ((suc (suc zero)) ∷ (suc (suc (suc zero))) ∷ []) → refl
+                       ; ((suc (suc (suc zero))) ∷ zero ∷ []) → refl
+                       ; ((suc (suc (suc zero))) ∷ (suc zero) ∷ []) → refl
+                       ; ((suc (suc (suc zero))) ∷ (suc (suc zero)) ∷ []) → refl
+                       ; ((suc (suc (suc zero))) ∷ (suc (suc (suc zero))) ∷ []) → refl
+                   } })
