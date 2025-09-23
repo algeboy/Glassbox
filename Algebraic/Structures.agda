@@ -51,19 +51,19 @@ module Algebraic.Structures where
 
 
 
-    Homomorphism : ∀ {sig : Signature} → Structure {sig} → Structure {sig} → Set
-    Homomorphism {sig} (A , opsA) (B , opsB) = 
-        Σ[ f ∈ (asSet A → asSet B) ]
-        ((i : Fin (nOps sig)) →
-            (x : Vec (asSet A) (proj₂ (proj₂ sig i))) →
-                f (opsA i x) ≡ opsB i (map f x)
-        )
+    -- Homomorphism : ∀ {sig : Signature} → Structure {sig} → Structure {sig} → Set
+    -- Homomorphism {sig} (A , opsA) (B , opsB) = 
+    --     Σ[ f ∈ (asSet A → asSet B) ]
+    --     ((i : Fin (nOps sig)) →
+    --         (x : Vec (asSet A) (proj₂ (proj₂ sig i))) →
+    --             f (opsA i x) ≡ opsB i (map f x)
+    --     )
 
-    {-- This is Definition 3.?? : Homomorphism --}
-    Homomorphism₁ : ∀ {sig : Signature} → Structure₁ {sig} → Structure₁ {sig} → Set
-    Homomorphism₁ {sig} (A , opsA) (B , opsB) = 
-        Σ[ f ∈ (A → B) ]
-        ((i : Fin (nOps sig)) →
-            (x : Vec A (proj₂ (proj₂ sig i))) →
-                f (opsA i x) ≡ opsB i (map f x)
-        )        
+    -- {-- This is Definition 3.?? : Homomorphism --}
+    -- Homomorphism₁ : ∀ {sig : Signature} → Structure₁ {sig} → Structure₁ {sig} → Set
+    -- Homomorphism₁ {sig} (A , opsA) (B , opsB) = 
+    --     Σ[ f ∈ (A → B) ]
+    --     ((i : Fin (nOps sig)) →
+    --         (x : Vec A (proj₂ (proj₂ sig i))) →
+    --             f (opsA i x) ≡ opsB i (map f x)
+    --     )        

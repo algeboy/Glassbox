@@ -141,4 +141,8 @@ module Algebraic.AbstractCategory where
         helper : Fin 11 → String × Equation {AbsCatSig} X
         helper i = lookup lawsVector i
 
-  
+    ACatStruct : Set₁
+    ACatStruct = Structure₁ {AbsCatSig}
+
+    ACat : Set₁ 
+    ACat = Σ[ A ∈ ACatStruct ] inVariety₁ {car₁ {AbsCatSig} A} {AbsCatSig} AbsCatLaws A
