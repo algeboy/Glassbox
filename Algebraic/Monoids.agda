@@ -10,6 +10,7 @@ open import Data.Vec using (Vec; []; _∷_; lookup)
 
 open import Countable.Sets
 open import Algebraic.Structures
+open import Algebraic.Signatures
 
 module Algebraic.Monoids where
 
@@ -33,15 +34,15 @@ module Algebraic.Monoids where
   myMod x zero = x                -- if divisor is 0, return x unchanged
   myMod x (suc y) = x % (suc y)   -- if divisor is non-zero, use normal mod
 
-  addFloop : ∀ {m n : ℕ} → Fin (m + n) → Fin (m + n) → Fin (m + n)
-  addFloop {m} {0} x y = # (toℕ x + toℕ y)  -- no modulo for n=0
-  addFloop {m} {suc k} x y with (toℕ x + toℕ y) <? m
-  ... | yes _ = # (toℕ x + toℕ y)
-  ... | no _  = # (m + ((toℕ x + toℕ y ∸ m) % suc k))
+  -- addFloop : ∀ {m n : ℕ} → Fin (m + n) → Fin (m + n) → Fin (m + n)
+  -- addFloop {m} {0} x y = # (toℕ x + toℕ y)  -- no modulo for n=0
+  -- addFloop {m} {suc k} x y with (toℕ x + toℕ y) <? m
+  -- ... | yes _ = # (toℕ x + toℕ y)
+  -- ... | no _  = # (m + ((toℕ x + toℕ y ∸ m) % suc k))
 
-  Floop : (m n : ℕ) → Structure {MonoidSig}
-  Floop m n = (F (m + n) , ops )  -- Use large bound to avoid constraint issues
-    where
-      ops : (i : Fin 2) → (Operator (F (m + n)) (proj₂ (proj₂ MonoidSig i)))
-      ops Fin.zero = λ _ → # 0          -- identity element
-      ops (Fin.suc Fin.zero) = λ x y → addFloop {m} {n} x y  -- binary operation
+  -- Floop : (m n : ℕ) → Structure {MonoidSig}
+  -- Floop m n = (F (m + n) , ops )  -- Use large bound to avoid constraint issues
+  --   where
+  --     ops : (i : Fin 2) → (Operator (F (m + n)) (proj₂ (proj₂ MonoidSig i)))
+  --     ops Fin.zero = λ _ → # 0          -- identity element
+  --     ops (Fin.suc Fin.zero) = λ x y → addFloop {m} {n} x y  -- binary operation

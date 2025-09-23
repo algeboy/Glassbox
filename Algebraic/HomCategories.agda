@@ -23,7 +23,7 @@ open import Algebraic.Equations
 open import Algebraic.AbstractCategory
 open import Countable.SetLaws
 
--- Used for signture & algebraic structure build.
+-- Used for signature & algebraic structure build.
 open import Data.String using (String)
 open import Data.Vec using (Vec; []; _∷_; lookup)
 

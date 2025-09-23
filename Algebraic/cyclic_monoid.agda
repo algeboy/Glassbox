@@ -9,6 +9,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Algebraic.Structures
+open import Algebraic.Signatures
 open import Countable.Sets
 
 module Algebraic.cyclic_monoid where
