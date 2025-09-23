@@ -10,6 +10,7 @@ open import Data.Vec using (Vec; map)
 
 open import Relation.Binary.PropositionalEquality using ( _≡_ )
 
+open import Algebraic.AbstractCategory
 open import Algebraic.Signatures
 open import Countable.Sets
 
