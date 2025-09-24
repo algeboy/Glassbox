@@ -22,32 +22,101 @@ module Algebraic.Capsules where
     -- A capsule is a simple algebraic structure with an action and combination operation
     -- data LCapsule : {sig : Signature} { A : ACatStruct } → Set where 
 
-    Capsule : {sig : Signature} → Set₁    
-    Capsule {sig} = Σ[ A ∈ ACatStruct ] 
+    LCapsule : {sig : Signature} → Set₁    
+    LCapsule {sig} = Σ[ A ∈ ACatStruct ] 
                     Σ[ X ∈ Set ] 
-                    ( car {AbsCatSig} A → X → X)
+                    X  -- the bot
+                    × 
+                    ( car₁ {AbsCatSig} A → X → X) -- the action
+                    × ( car₁ {AbsCatSig} A → X ) -- the guard
 
-    LeftRegularCapsule : ( A : ACatStruct ) → Capsule {AbsCatSig}
-    LeftRegularCapsule A = (A , car {AbsCatSig} A , mult)
+    LeftRegularCapsule : ( A : ACatStruct ) → LCapsule {AbsCatSig}
+    LeftRegularCapsule A = (A , car₁ {AbsCatSig} A , bot , mult , guard)
       where
-        mult : car {AbsCatSig} A → car {AbsCatSig} A → car {AbsCatSig} A
-        mult f g = (getOp AbsCatSig A (# 1)) (f ∷ g ∷ [])
+        bot : car₁ {AbsCatSig} A
+        bot = (proj₂ A) (# 0) []
 
-    -- -- A bicapsule extends this with two target spaces
-    -- Bicapsule : {sig : Signature} → Set
-    -- Bicapsule {sig} = Σ[ A ∈ ACatStruct ] 
-    --                   Σ[ X ∈ ACatStruct ] 
-    --                   Σ[ Y ∈ ACatStruct ]
-    --                   (car {AbsCatSig} A → car {AbsCatSig} X) × (car {AbsCatSig} A → car {AbsCatSig} Y) × (car {AbsCatSig} A → car {AbsCatSig} X → car {AbsCatSig} X) × (car {AbsCatSig} Y → car {AbsCatSig} A → car {AbsCatSig} Y)
-    -- -- Note: we could add laws to these structures, but for now we leave them as-is.
+        mult : car₁ {AbsCatSig} A → car₁ {AbsCatSig} A → car₁ {AbsCatSig} A
+        mult a x = (proj₂ A) (# 1) (a ∷ x ∷ [])
 
-    -- -- Example: the category of sets forms a bicapsule over itself
-    -- SetBicapsule : Bicapsule {sig = AbsCatSig}
-    -- SetBicapsule = (SetCat , SetCat , SetCat , leftTgt , rightTgt , combine , combine)
-    --   where
-    --     leftTgt : car {AbsCatSig} SetCat → car {AbsCatSig} SetCat
-    --     leftTgt f = ◄ f  
-    --     rightTgt : car {AbsCatSig} SetCat → car {AbsCatSig} SetCat
-    --     rightTgt f = f ◄  
-    --     combine : car {AbsCatSig} SetCat → car {AbsCatSig} SetCat → car {AbsCatSig} SetCat
-    --     combine f g = f ← g  
+        guard : car₁ {AbsCatSig} A → car₁ {AbsCatSig} A
+        guard a = (proj₂ A) (# 2) (a ∷ [])
+
+    RCapsule : {sig : Signature} → Set₁    
+    RCapsule {sig} = Σ[ A ∈ ACatStruct ] 
+                    Σ[ X ∈ Set ] 
+                    X  -- the bot
+                    × 
+                    (car₁ {AbsCatSig} A → X → X) -- the action (right)
+                    × (car₁ {AbsCatSig} A → X ) -- the guard
+
+    RightRegularCapsule : (A : ACatStruct) → RCapsule {AbsCatSig}
+    RightRegularCapsule A = (A , car₁ {AbsCatSig} A , bot , action , guard)
+        where
+        bot : car₁ {AbsCatSig} A
+        bot = (proj₂ A) (# 0) []
+
+        action : car₁ {AbsCatSig} A → car₁ {AbsCatSig} A → car₁ {AbsCatSig} A
+        action x a = (proj₂ A) (# 1) (x ∷ a ∷ [])
+
+        guard : car₁ {AbsCatSig} A → car₁ {AbsCatSig} A
+        guard a = (proj₂ A) (# 2) (a ∷ [])
+    
+    -- Bicapsule: A acts on the left of X, B acts on the right of X
+    BiCapsule : {sig : Signature} → Set₁    
+    BiCapsule {sig} = Σ[ A ∈ ACatStruct ] 
+                      Σ[ B ∈ ACatStruct ] 
+                      Σ[ X ∈ Set ] 
+                      X  -- the bot
+                      × 
+                      (car₁ {AbsCatSig} A → X → X) -- left action: A acts on X from left
+                      × 
+                      (X → car₁ {AbsCatSig} B → X) -- right action: B acts on X from right  
+                      × 
+                      (car₁ {AbsCatSig} A → X) -- left guard
+                      × 
+                      (car₁ {AbsCatSig} B → X) -- right guard
+
+    RegularBiCapsule : (A : ACatStruct) → BiCapsule {AbsCatSig}
+    RegularBiCapsule A = (A , A , car₁ {AbsCatSig} A , bot , leftAction , rightAction , leftGuard , rightGuard)
+        where
+        bot : car₁ {AbsCatSig} A
+        bot = (proj₂ A) (# 0) []
+
+        leftAction : car₁ {AbsCatSig} A → car₁ {AbsCatSig} A → car₁ {AbsCatSig} A
+        leftAction a x = (proj₂ A) (# 1) (a ∷ x ∷ [])
+
+        rightAction : car₁ {AbsCatSig} A → car₁ {AbsCatSig} A → car₁ {AbsCatSig} A  
+        rightAction x b = (proj₂ A) (# 1) (x ∷ b ∷ [])
+
+        leftGuard : car₁ {AbsCatSig} A → car₁ {AbsCatSig} A
+        leftGuard a = (proj₂ A) (# 2) (a ∷ [])
+
+        rightGuard : car₁ {AbsCatSig} A → car₁ {AbsCatSig} A  
+        rightGuard b = (proj₂ A) (# 3) (b ∷ [])
+
+    -- A Hom category capsule.
+    
+
+    -- A morphism of bicapsules has f(a·x)=a·f(x) and f(x·b)=f(x)·b
+    BiCapsuleMorphism : {sig : Signature} → BiCapsule {sig} → BiCapsule {sig} → Set
+    BiCapsuleMorphism {sig} (A₁ , B₁ , X₁ , bot₁ , leftAct₁ , rightAct₁ , leftGuard₁ , rightGuard₁) 
+                            (A₂ , B₂ , X₂ , bot₂ , leftAct₂ , rightAct₂ , leftGuard₂ , rightGuard₂) = 
+        Σ[ fA ∈ (car₁ {AbsCatSig} A₁ → car₁ {AbsCatSig} A₂) ]
+        Σ[ fB ∈ (car₁ {AbsCatSig} B₁ → car₁ {AbsCatSig} B₂) ] 
+        Σ[ fX ∈ (X₁ → X₂) ]
+        -- Preserve bot
+        (fX bot₁ ≡ bot₂)
+        ×
+        -- Left action compatibility: f(a·x) = f(a)·f(x)
+        ((a : car₁ {AbsCatSig} A₁) (x : X₁) → fX (leftAct₁ a x) ≡ leftAct₂ (fA a) (fX x))
+        ×
+        -- Right action compatibility: f(x·b) = f(x)·f(b)  
+        ((x : X₁) (b : car₁ {AbsCatSig} B₁) → fX (rightAct₁ x b) ≡ rightAct₂ (fX x) (fB b))
+        ×
+        -- Left guard compatibility: f(guard(a)) = guard(f(a))
+        ((a : car₁ {AbsCatSig} A₁) → fX (leftGuard₁ a) ≡ leftGuard₂ (fA a))
+        ×
+        -- Right guard compatibility: f(guard(b)) = guard(f(b))
+        ((b : car₁ {AbsCatSig} B₁) → fX (rightGuard₁ b) ≡ rightGuard₂ (fB b))
+

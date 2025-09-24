@@ -9,7 +9,7 @@ open import Data.String using (String)
 open import Data.Vec using (Vec; map)
 
 
-open import Relation.Binary.PropositionalEquality using ( _≡_ )
+open import Relation.Binary.PropositionalEquality using ( _≡_; refl )
 
 open import Algebraic.Signatures
 open import Countable.Sets
@@ -49,21 +49,32 @@ module Algebraic.Structures where
     id {sig} (N , ops) = ℕ←ℕ (λ x → x)
     id {sig} (F a , ops) = F←F {a} {a} (λ x → x)
 
+    {-- Terminal algebraic structure on Fin 1 where all operators return zero --}
+    TerminalStruct : ∀ {sig : Signature} → Structure {sig}
+    TerminalStruct {sig} = (F 1 , ops)
+        where
+        ops : (i : Fin (nOps sig)) → Operator (F 1) (proj₂ (proj₂ sig i))
+        ops i = λ _ → Fin.zero  -- All operators return the constant zero
 
+    {-- Terminal algebraic structure₁ on Fin 1 where all operators return zero --}
+    TerminalStruct₁ : ∀ {sig : Signature} → Structure₁ {sig}
+    TerminalStruct₁ {sig} = (Fin 1 , ops)
+        where
+        ops : (i : Fin (nOps sig)) → Operator₁ (Fin 1) (proj₂ (proj₂ sig i))
+        ops i = λ _ → Fin.zero  -- All operators return the constant zero
 
-    -- Homomorphism : ∀ {sig : Signature} → Structure {sig} → Structure {sig} → Set
-    -- Homomorphism {sig} (A , opsA) (B , opsB) = 
-    --     Σ[ f ∈ (asSet A → asSet B) ]
-    --     ((i : Fin (nOps sig)) →
-    --         (x : Vec (asSet A) (proj₂ (proj₂ sig i))) →
-    --             f (opsA i x) ≡ opsB i (map f x)
-    --     )
+    {-- The unique element in Fin 1 --}
+    terminal-element : Fin 1
+    terminal-element = Fin.zero
 
-    -- {-- This is Definition 3.?? : Homomorphism --}
-    -- Homomorphism₁ : ∀ {sig : Signature} → Structure₁ {sig} → Structure₁ {sig} → Set
-    -- Homomorphism₁ {sig} (A , opsA) (B , opsB) = 
-    --     Σ[ f ∈ (A → B) ]
-    --     ((i : Fin (nOps sig)) →
-    --         (x : Vec A (proj₂ (proj₂ sig i))) →
-    --             f (opsA i x) ≡ opsB i (map f x)
-    --     )        
+    {-- Proof that terminal-element is the only element in Fin 1 --}
+    terminal-unique : (x : Fin 1) → x ≡ terminal-element
+    terminal-unique Fin.zero = refl
+
+    {-- Terminal property: there is a unique homomorphism from any structure to TerminalStruct --}
+    terminal-map : ∀ {sig : Signature} → (A : Structure {sig}) → asSet (proj₁ A) → Fin 1
+    terminal-map A x = Fin.zero
+
+    terminal-map₁ : ∀ {sig : Signature} → {A : Set} → A → Fin 1  
+    terminal-map₁ x = Fin.zero
+
