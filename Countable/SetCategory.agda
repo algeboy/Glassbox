@@ -34,7 +34,9 @@ module Countable.SetCategory where
 
     -- TBD: should this signature belong in some general category module?
 
-    SetCatStruct : ACatStruct 
+    -- We create a category structure where ConFun serves as both objects and morphisms
+    -- This is a monoid-like structure on ConFun
+    SetCatStruct : Structure₁ {AbsCatSig} 
     SetCatStruct = (ConFun , ops )
         where
         ops : (i : Fin 4) → (Operator₁ ConFun (proj₂ (proj₂ AbsCatSig i)))
@@ -83,7 +85,8 @@ module Countable.SetCategory where
         helper i9  const₁ = λ const₂ → srcCompProof (const₂ (# 0)) (const₂ (# 1))  -- 9: domainCompLaw: (f · g) ◁ = ((f ◁) · g) ◁
         helper i10 const₁ = λ const₂ → ∘-assoc (const₂ (# 0)) (const₂ (# 1)) (const₂ (# 2))  -- 10: assocLaw: f · (g · h) = (f · g) · h
 
-    SetCat : ACat
+    -- The final category with both structure and laws
+    SetCat : Σ[ A ∈ Structure₁ {AbsCatSig} ] inVariety₁ {ConFun} {AbsCatSig} AbsCatLaws A
     SetCat = (SetCatStruct , certifySetCat )
 
     
