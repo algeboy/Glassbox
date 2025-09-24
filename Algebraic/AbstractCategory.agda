@@ -4,6 +4,7 @@ open import Data.Fin using (Fin; #_)
 open import Data.Product using (_×_; _,_)
 open import Agda.Primitive using (lzero)
 open import Relation.Nullary using (Dec; yes; no)
+-- open import Data.Bool using (Bool; true; false; if_then_else_)
 
 
 open import Data.Empty using (⊥-elim)
@@ -141,8 +142,10 @@ module Algebraic.AbstractCategory where
         helper : Fin 11 → String × Equation {AbsCatSig} X
         helper i = lookup lawsVector i
 
-    ACatStruct : Set
-    ACatStruct = Structure {AbsCatSig}
+    ACatStruct : Set₁
+    ACatStruct = Structure₁ {AbsCatSig}
 
-    ACat : Set
-    ACat = Σ[ A ∈ ACatStruct ] inVariety {car {AbsCatSig} A} {AbsCatSig} AbsCatLaws A
+    ACat : Set₁
+    ACat = Σ[ A ∈ ACatStruct ] inVariety₁ {car₁ {AbsCatSig} A} {AbsCatSig} AbsCatLaws A
+
+    

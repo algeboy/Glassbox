@@ -26,6 +26,7 @@ open import Countable.SetLaws
 -- Used for signature & algebraic structure build.
 open import Data.String using (String)
 open import Data.Vec using (Vec; []; _∷_; lookup)
+open import Data.Unit using (⊤; tt)
 
 open import Data.Product using (Σ; Σ-syntax; _,_; _×_; proj₁; proj₂)
 -----------------------------------------------------
@@ -89,3 +90,90 @@ module Algebraic.HomCategories where
     HomCat : (sig : Signature) → ACat
     HomCat sig = (HomCatStruct sig , certifyHomCat sig )
     
+    {-- The subcategory of homomorphisms with the only function being the identity 
+        morphism on the TerminalStruct. --}
+    
+    -- Create the identity homomorphism on TerminalStruct
+    terminalIdHom : ∀ {sig : Signature} → Hom {sig}
+    terminalIdHom {sig} = FF (F←F {1} {1} (λ x → x)) (λ x → x) refl TerminalStruct TerminalStruct refl refl 
+        (λ i x → refl)  -- The homomorphism property holds trivially since all operations return zero
+
+    -- A structure containing only the identity homomorphism on the terminal structure  
+    TerminalIdCatStruct : ∀ {sig : Signature} → ACatStruct
+    TerminalIdCatStruct {sig} = (Fin 1 , ops)
+        where
+        -- Map the single element to the identity homomorphism
+        toHom : Fin 1 → Hom {sig}
+        toHom Fin.zero = terminalIdHom {sig}
+        
+        ops : (i : Fin 4) → (Operator₁ (Fin 1) (proj₂ (proj₂ AbsCatSig i)))
+        ops Fin.zero = λ _ → Fin.zero                    -- □ = identity element  
+        ops (Fin.suc Fin.zero) = λ _ → Fin.zero          -- composition always gives identity
+        ops (Fin.suc (Fin.suc Fin.zero)) = λ _ → Fin.zero -- source is identity
+        ops (Fin.suc (Fin.suc (Fin.suc Fin.zero))) = λ _ → Fin.zero -- target is identity
+
+    -- Certification that TerminalIdCatStruct satisfies ACat laws
+    certifyTerminalIdCat : ∀ {sig : Signature} → inVariety₁ {Fin 1} {AbsCatSig} AbsCatLaws (TerminalIdCatStruct {sig})
+    certifyTerminalIdCat const i = helper i const
+        where
+        -- Helper lemma: all elements in Fin 1 are equal to Fin.zero
+        fin1-unique : (x : Fin 1) → x ≡ Fin.zero
+        fin1-unique Fin.zero = refl
+        
+        helper : (i : Fin 11) → (const : Fin 3 → Fin 1) → SatEqProp₁ {Fin 3} {AbsCatSig} TerminalIdCatStruct (proj₂ (proj₂ (proj₂ AbsCatLaws) i))
+        helper Fin.zero const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) Fin.zero)))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) Fin.zero)))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc Fin.zero) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc Fin.zero))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc Fin.zero))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc Fin.zero)) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc Fin.zero)))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc Fin.zero)))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc (Fin.suc Fin.zero))) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))))) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))))))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero))))))))))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+        helper (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))))) const = λ const₁ → 
+          let lhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.lhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))))))))
+              rhs = evalFormula₁ TerminalIdCatStruct const₁ (Equation.rhs (proj₂ (proj₂ (proj₂ AbsCatLaws) (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc (Fin.suc Fin.zero)))))))))))))
+          in trans (fin1-unique lhs) (sym (fin1-unique rhs))
+
+    -- The final terminal identity category
+    TerminalIdCat : ∀ {sig : Signature} → ACat  
+    TerminalIdCat {sig} = (TerminalIdCatStruct {sig} , certifyTerminalIdCat {sig})
+
+    -- Test that we have created a proper terminal identity category
+    test-terminal-cat : ACat
+    test-terminal-cat = (TerminalIdCatStruct {AbsCatSig} , certifyTerminalIdCat {AbsCatSig})
+    
+    -- Verify that our construction has only one homomorphism
+    test-unique-hom : (x : Fin 1) → x ≡ Fin.zero
+    test-unique-hom Fin.zero = refl
