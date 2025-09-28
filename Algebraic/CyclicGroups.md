@@ -3,15 +3,15 @@
 [ToC]
 
 ## Group Signature
-We define a **group signature** with three operations: a nullary identity element, binary addition, and unary inverse. This captures the essential structure needed for group operations.
+We define a **group signature** with three operations: a nullary identity element, binary addition, and unary inverse. This captures the essential structure needed for group operations. The term `GroupSig` is of type `Signature` which is defined in Signatures.agda.
 
 ```agda
 GroupSig : Signature
 GroupSig = (3 , operations)
   where
     operations : Fin 3 → (String × ℕ)
-    operations zero = ("0" , 0)         -- identity element (nullary)
-    operations (suc zero) = ("+" , 2)   -- binary addition
+    operations zero = ("0" , 0)             -- identity element (nullary)
+    operations (suc zero) = ("+" , 2)       -- binary addition
     operations (suc (suc zero)) = ("-" , 1) -- unary inverse
 ```
 
@@ -34,16 +34,15 @@ The **GroupLaws** record captures the four group axioms that any group must sati
 record GroupLaws (X : ConSet) (ops : (i : Fin (nOps GroupSig)) → Operator X (proj₂ (proj₂ GroupSig i))) : Set where
   field
     left-identity : (x : asSet X) → 
-      ops add-op (ops identity-op [] ∷ x ∷ []) ≡ x
+         ops add-op (ops identity-op [] ∷ x ∷ []) ≡ x
     right-identity : (x : asSet X) → 
-      ops add-op (x ∷ ops identity-op [] ∷ []) ≡ x
+         ops add-op (x ∷ ops identity-op [] ∷ []) ≡ x
     associativity : (x y z : asSet X) → 
-      ops add-op (ops add-op (x ∷ y ∷ []) ∷ z ∷ []) ≡ 
-      ops add-op (x ∷ ops add-op (y ∷ z ∷ []) ∷ [])
+         ops add-op (ops add-op (x ∷ y ∷ []) ∷ z ∷ [])  ≡  ops add-op (x ∷ ops add-op (y ∷ z ∷ []) ∷ [])
     left-inverse : (x : asSet X) → 
-      ops add-op (ops inv-op (x ∷ []) ∷ x ∷ []) ≡ ops identity-op []
+         ops add-op (ops inv-op (x ∷ []) ∷ x ∷ []) ≡ ops identity-op []
     right-inverse : (x : asSet X) → 
-      ops add-op (x ∷ ops inv-op (x ∷ []) ∷ []) ≡ ops identity-op []
+         ops add-op (x ∷ ops inv-op (x ∷ []) ∷ []) ≡ ops identity-op []
 ```
 
 ## Finite Cyclic Group Operations
@@ -88,7 +87,7 @@ CyclicGroup n = (structure , laws)
       }
 ```
 
-This construction produces `Fin (suc n)` as the carrier set, representing ℤ/(n+1)ℤ, with all group axioms formally verified. The inhabitants `fin-left-identity n' etc are explicit proofs provided in the agda file.
+This construction produces `Fin (suc n)` as the carrier set, representing ℤ/(n+1)ℤ, with all group axioms formally verified. The inhabitants `fin-left-identity n` etc are explicit proofs provided in the agda file.
 
 ## Examples
 ### ℤ/4ℤ - The Cyclic Group of Order 4
