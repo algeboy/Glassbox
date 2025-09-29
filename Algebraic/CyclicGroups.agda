@@ -650,3 +650,68 @@ hom-mult-by-2 n =
             -- mult-by-2(inv(x)) = inv(x) + inv(x) = inv(x + x) = inv(mult-by-2(x))
             -- This follows from our cyclic-inverse-distributive lemma
             sym (cyclic-inverse-distributive n x x) } })
+
+-----------------------------------------------------
+-- Explicit Example: CyclicGroup 5 (Z/6Z) and mult-by-2 homomorphism
+-----------------------------------------------------
+
+-- Construct CyclicGroup 5 (which gives us Z/6Z with elements {0,1,2,3,4,5})
+G : Σ (Structure {GroupSig}) (λ S → GroupLaws (proj₁ S) (proj₂ S))
+G = CyclicGroup 5
+
+-- Extract the structure and operations
+G-structure : Structure {GroupSig}
+G-structure = proj₁ G
+
+G-carrier : Set
+G-carrier = asSet (proj₁ G-structure)
+
+-- Operations for G
+_+G_ : G-carrier → G-carrier → G-carrier
+a +G b = (proj₂ G-structure) add-op (a ∷ b ∷ [])
+
+-- Construct the multiplication by 2 homomorphism
+f : Hom {GroupSig}
+f = hom-mult-by-2 5
+
+-- Extract the underlying function for explicit computation
+mult-by-2-fn : G-carrier → G-carrier
+mult-by-2-fn x = x +G x
+
+
+-- Specific examples: f maps 2 to 4 and 5 to 4
+
+
+-- Example 1: f(2) = 2 + 2 = 4 in Z/6Z
+example-f-2 : G-carrier
+example-f-2 = mult-by-2-fn (# 2)
+
+-- Verify: f(2) = 4
+proof-f-2-equals-4 : example-f-2 ≡ (# 4)
+proof-f-2-equals-4 = refl
+
+-- Example 2: f(5) = 5 + 5 = 10 ≡ 4 (mod 6) in Z/6Z
+example-f-5 : G-carrier
+example-f-5 = mult-by-2-fn (# 5)
+
+-- Verify: f(5) = 4
+proof-f-5-equals-4 : example-f-5 ≡ (# 4)
+proof-f-5-equals-4 = refl
+
+-- Additional examples to show the complete mapping
+-- f(0) = 0, f(1) = 2, f(2) = 4, f(3) = 0, f(4) = 2, f(5) = 4
+
+example-f-0 : mult-by-2-fn (# 0) ≡ (# 0)
+example-f-0 = refl
+
+example-f-1 : mult-by-2-fn (# 1) ≡ (# 2)
+example-f-1 = refl
+
+example-f-3 : mult-by-2-fn (# 3) ≡ (# 0)
+example-f-3 = refl
+
+example-f-4 : mult-by-2-fn (# 4) ≡ (# 2)
+example-f-4 = refl
+
+-- Summary: The multiplication by 2 homomorphism on Z/6Z has image {0, 2, 4}
+-- and kernel {0, 3}, demonstrating that f is not injective but is a valid homomorphism
