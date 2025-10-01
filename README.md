@@ -5,7 +5,7 @@ A prototype of a type checked computational algebra
  - [Algebraic](#algebraic)
  - [Countable](#countable)
  - [Groups](#groups)
- - [Authos](#authors)
+ - [Authors](#authors)
  - [Acknowledgements](#acknowledgements)
 
 ## Algebraic 
