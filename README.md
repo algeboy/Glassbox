@@ -10,7 +10,7 @@ A prototype of a type checked computational algebra
 
 ## Algebraic 
 
-A minimal demonstration of universal algebra varieties and the their associated abstract categories.  This interprets the algebras as objects on the [countable sets](#countable).  Since these categories are abstract, we  consider only their homomorphisms so they are called `Hom` which is a subtype of `ConFun`.  The abstract categories are then demonstrated to inhabit algebraic structures themselves, but now in a larger universe for which we use Agda's own `Set`.
+A minimal demonstration of universal algebra varieties and their associated abstract categories.  This interprets the algebras as objects on the [countable sets](#countable).  Since these categories are abstract, we  consider only their homomorphisms so they are called `Hom` which is a subtype of `ConFun`.  The abstract categories are then demonstrated to inhabit algebraic structures themselves, but now in a larger universe for which we use Agda's own `Set`.
 
 
 ## Countable 
