@@ -15,7 +15,7 @@ A minimal demonstration of universal algebra varieties and the their associated 
 
 ## Countable 
 
-A minimal demonstration of a of a category of countable sets.  This is created as an abstract category of functions between natural numbers and intervals.  This is a skeleton category so it is categorically equivalent to $Sets$ for the Zermelo Set Theory without Replacement or Choice.  However, as this is a minimal example we do not include most of the necessary enrichments to explore a Set Theory.  In particular we do not expose topos properties.
+A minimal demonstration of a category of countable sets.  This is created as an abstract category of functions between natural numbers and intervals.  This is a skeleton category so it is categorically equivalent to $Sets$ for the Zermelo Set Theory without Replacement or Choice.  However, as this is a minimal example we do not include most of the necessary enrichments to explore a Set Theory.  In particular we do not expose topos properties.
 
 As it is an abstract category it involves only its functions called `ConFun` for "constructable functions".
 
