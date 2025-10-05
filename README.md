@@ -1,6 +1,6 @@
 # Glassbox <!-- omit in toc --> 
 
-A minimal working example of a type-checked computational algebra. This is based off of work from [Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors). Our goal is to produce a cyclic bicapsule. There are still holes for proofs.
+This is based off of work from [Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors). Our goal is to produce a cyclic bicapsule. There are still holes for proofs; see the [Issues](https://github.com/algeboy/Glassbox/issues) for more details.
 
 This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html) version 2.8. This also uses the [Agda stdlib](https://github.com/agda/agda-stdlib) and [cubical](https://github.com/agda/cubical).
 
