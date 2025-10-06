@@ -1,38 +1,44 @@
-# Glassbox
+# Glassbox <!-- omit in toc --> 
 
-A prototype of a type checked computational algebra
+This is based off of work from [Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors). Our goal is to produce a cyclic bicapsule. There are still holes for proofs; see the [Issues](https://github.com/algeboy/Glassbox/issues) for more details.
 
- - [Algebraic](#algebraic)
- - [Countable](#countable)
- - [Groups](#groups)
- - [Authors](#authors)
- - [Acknowledgements](#acknowledgements)
+This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html) version 2.8. This also uses the [Agda stdlib](https://github.com/agda/agda-stdlib) and [cubical](https://github.com/agda/cubical).
+
+- [Algebraic](#algebraic)
+	- [Groups](#groups)
+- [Countable](#countable)
+- [Practice](#practice)
+- [Authors](#authors)
+- [Acknowledgements](#acknowledgements)
 
 ## Algebraic 
 
-A minimal demonstration of universal algebra varieties and their associated abstract categories.  This interprets the algebras as objects on the [countable sets](#countable).  Since these categories are abstract, we  consider only their homomorphisms so they are called `Hom` which is a subtype of `ConFun`.  The abstract categories are then demonstrated to inhabit algebraic structures themselves, but now in a larger universe for which we use Agda's own `Set`.
+A minimal demonstration of universal algebra varieties and their associated abstract categories.  This interprets the algebras as objects on [countable sets](#countable).  Since these categories are abstract, we  consider only their homomorphisms so they are called `Hom` which is a subtype of `ConFun`.  The abstract categories are then demonstrated to inhabit algebraic structures themselves, but now in a larger universe for which we use Agda's own `Set`.
 
+### Groups
+
+A special case of the variety of groups demonstrating characteristic structure.
 
 ## Countable 
 
-A minimal demonstration of a category of countable sets.  This is created as an abstract category of functions between natural numbers and intervals.  This is a skeleton category so it is categorically equivalent to $Sets$ for the Zermelo Set Theory without Replacement or Choice.  However, as this is a minimal example we do not include most of the necessary enrichments to explore a Set Theory.  In particular we do not expose topos properties.
+A minimal demonstration of a category of countable sets.  This is created as an abstract category of functions between natural numbers and intervals.  This is a skeleton category, so it is categorically equivalent to $Sets$ for the Zermelo Set Theory without Replacement or Choice.  However, as this is a minimal example, we do not include most of the necessary enrichments to explore a Set Theory.  In particular, we do not expose topos properties.
 
-As it is an abstract category it involves only its functions called `ConFun` for "constructable functions".
+Since it is an abstract category, it involves only its functions which are called `ConFun` for "constructable functions".
 
-This module assumes function extensionality.
+*This module assumes function extensionality.*
 
-## Groups
+## Practice
 
-A special case of the variety of groups demonstrating characteristic structure.
+We have included some of the many files and tests we developed along the way in case anyone might learn from these.
 
 ---
 
 ## Authors
 
- * Peter Brooksbank, University of Bucknell
+ * Peter A. Brooksbank, University of Bucknell
  * Heiko Dietrich, Monash University
  * Joshua Maglione, University of Galway
- * Eamonn O'Brien, University of Auckland
+ * E.A. O'Brien, University of Auckland
  * James B. Wilson, Colorado State University
 
 ## Acknowledgements
