@@ -11,6 +11,14 @@ This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/gettin
 - [Authors](#authors)
 - [Acknowledgements](#acknowledgements)
 
+## Minimal Working Example
+
+To compile the minimal working example install Agda 2.8 via above steps, clone this repo into a working folder with access to your agda installation and run this.
+```
+agda Algebraic/Capsules.agda
+```
+A successful compilation will report no errors found.
+
 ## Algebraic 
 
 A minimal demonstration of universal algebra varieties and their associated abstract categories.  This interprets the algebras as objects on [countable sets](#countable).  Since these categories are abstract, we  consider only their homomorphisms so they are called `Hom` which is a subtype of `ConFun`.  The abstract categories are then demonstrated to inhabit algebraic structures themselves, but now in a larger universe for which we use Agda's own `Set`.
