@@ -64,14 +64,14 @@ A minimal demonstration of universal algebra varieties and their associated abst
 Relevant files
  * `Algebraic/Structures.agda` develops the relevant data types of algebraic structures in the form of universal algebra.  Specifically instead of a hierarchy of named algebras (such as groups, rings, and monoids) every algebraic structure is a [countable sets](#countable) with operations forming a signature; see also `Algebraic/Signatures.agda`.  See [Structures Documentation](Algebraic/Structures.md) for details.
  * `Algebraic/Varieties.agda` adds equations and equational laws to algebraic structures, namely **varieties** in the sense of universal algebra. This file is suuported by `Algebraic/Equations.agda`. See [Varieties Documentation](Algebraic/Varieties.md) for details.
- * `Algebraic/Homomorphism.agda` collects the data types necessary for homomorphisms of algebraic structures.  As these are homomorphisms of [countable sets](#countable) they take the type `ConFun`. See [Homomorphisms](Algebraic/Homomorphism.md) for details.
+ * `Algebraic/Homomorphism.agda` collects the data types necessary for homomorphisms of algebraic structures.  Since these are homomorphisms of [countable sets](#countable) they take the type `ConFun`. See [Homomorphisms](Algebraic/Homomorphism.md) for details.
  * `Algebraic/HomCategories.agda` structures the homomorphisms of algebraic structures on `ConFun` into categories in a variety of abstract categories `AbsCat`. The file is supported by `Algebraic/AbstractCategory.agda`.
- * `Algebraic/Capsules.agda` is the main algebraic vehical to encode natural transformations, and hence to model characteristic structures as aglebraic data.
+ * `Algebraic/Capsules.agda` is the main algebraic vehical to encode natural transformations, and hence to model characteristic structures as algebraic data.
  * `Algebraic/TerminalCapsules.agda` the capsule representing the trivial quotient of an algebraic structure $A\to 0$ where $0$ is a terminal algebra. This is the algebraic structure on a set of size 1.
 
 ### Groups
 
-A special case of the variety of groups demonstrating characteristic structure.  An aspirational future feature is to develop an interface from these Agda types to a Computer Algebra System that computes relevant characteristic structure through efficient means and passes along the data to the certification with types as done in Agda.
+A special case of the variety of groups demonstrating characteristic structure.  An aspirational feature is to develop an interface from these Agda types to a Computer Algebra System that computes relevant characteristic structure through efficient means and passes along the data to the certification with types as done in Agda.
 
 
 ---
