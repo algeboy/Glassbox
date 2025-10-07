@@ -71,7 +71,7 @@ Relevant files
 
 ### Groups
 
-A special case of the variety of groups demonstrating characteristic structure.  An aspirational future feature is to develop an interface from these Agda types to a Computer Algebra System that computes relevant characteristic structure through efficient means and pass along the data to the certification with types as done in Agda.
+A special case of the variety of groups demonstrating characteristic structure.  An aspirational future feature is to develop an interface from these Agda types to a Computer Algebra System that computes relevant characteristic structure through efficient means and passes along the data to the certification with types as done in Agda.
 
 
 ---
