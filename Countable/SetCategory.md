@@ -327,6 +327,6 @@ The only subtle point is that you need to inhabit the proof of the impossible ty
 
 This feels like a hack but I read Agda permits it.
 
-Now back of the envelope: if you fix h and g types there are still 5 cases for 5, namely the 5 types of `ConFun` so you have 125 cases, and very few can be packaged by wildcards but it does seem like a bit of refactoring would be possible or some tactics.  
+Now, a back of the envelope calculation: if you fix h and g types there are still 5 cases for 5, namely the 5 types of `ConFun` so you have 125 cases, and very few can be packaged by wildcards but it does seem like a bit of refactoring would be possible or some tactics.  
 
 
