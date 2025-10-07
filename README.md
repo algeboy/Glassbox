@@ -21,7 +21,25 @@ git clone https://github.com/algeboy/Glassbox.git
 cd Glassbox
 agda Algebraic/TerminalCapsules.agda
 ```
-A successful compilation will report no errors found.
+A successful compilation will report no errors found and a list of intermediate compiled files will also be shown. Something like this:
+```
+Checking Algebraic.TerminalCapsules (/Users/algeboy/CODE/test/Glassbox/Algebraic/TerminalCapsules.agda).
+ Checking Algebraic.AbstractCategory (/Users/algeboy/CODE/test/Glassbox/Algebraic/AbstractCategory.agda).
+  ...
+  Checking Countable.SetCategory (/Users/algeboy/CODE/test/Glassbox/Countable/SetCategory.agda).
+```
+To see more details you can increase the verbosity of the compiler.
+```
+agda -v 2 Algebraic/TerminalCapsules.agda
+```
+If you would like to experiment with connecting this code with other software systems such as a computer algebra system you can compile the libraries to Haskell.
+```
+agda --compile Algebraic/TerminalCapsules.agda
+```
+The generated Haskell code will appear in a new folder in the same root folder likely called `MAlonzo` and contain several necessary files along with those of this project.
+
+The present code compiles the so-called "Terminal Capsule" which encode the fact that the trivial quotient of any algebraic structure is always characteristic.  While not a surprise, the point of this experiment is to properly develop all the necessary data types and actions.  Replacing with algorithms to compute interesting characteristic structure requires either developing computational algebra algorithms with Agda itself (a slow and likely inefficient process) or more practically transporting the computations through the Haskell interface to an existing Computer Algebra System.
+
 
 ## Algebraic 
 
