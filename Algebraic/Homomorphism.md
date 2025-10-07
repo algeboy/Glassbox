@@ -4,7 +4,7 @@ Homomorphisms are designed to form an abstract category.  This means they are a 
 
 To make an abstract category, we need to split on the case that $f\neq \bot$, which should  count as a homomorphism but not in the sense of the homomorphism property.
 
-The first thing is to make a simple to read type that says the expected homomorphism condition.  As usual, the implicits are on the left-hand side.
+The first thing is to make a simple-to-read type that states the expected homomorphism condition.  As usual, the implicits are on the left-hand side.
 ```math
 \text{hom}_{\Omega}(\langle A,\omega_A\rangle,\langle B,\omega_B\rangle) :=\sqcup_{f:A\to B} \prod_{\omega:\Omega}\prod_{a:A^{|\omega|}}f(\omega_A(a))=\omega_B(\text{map}(f,a))
 ```
