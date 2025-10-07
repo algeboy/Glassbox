@@ -1,12 +1,11 @@
 # Glassbox <!-- omit in toc --> 
 
-The aim of the Glassbox project is to build a new model of computation 
-for algebraic structures that requires each input to be passed with 
-a certificate of correctness. This repository contains an Agda implementation of
-theory developed in [Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors) and serves, in part, as a proof of the glassbox concept. 
+The aim of the Glassbox project is to build a new model of computation for algebraic structures that requires each input to be passed with 
+a certificate of correctness. This repository contains an Agda implementation of theory developed in 
+[Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors) and serves, in part, as a proof of the glassbox concept. 
 Its specific goal is to produce a type-checked cyclic bicapsule. 
 
-The authors welcome collaboration on the project, and encourage interested parties to visit the [Issues](https://github.com/algeboy/Glassbox/issues) area to learn more about the outstanding challenges.
+We welcome collaboration on the project, and encourage interested parties to visit the [Issues](https://github.com/algeboy/Glassbox/issues) area to learn more about the outstanding challenges.
 
 This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html) version 2.8. It also uses the [Agda stdlib](https://github.com/agda/agda-stdlib) and [cubical](https://github.com/agda/cubical).
 
@@ -30,11 +29,11 @@ Checking Algebraic.TerminalCapsules (/Users/algeboy/CODE/test/Glassbox/Algebraic
   ...
   Checking Countable.SetCategory (/Users/algeboy/CODE/test/Glassbox/Countable/SetCategory.agda).
 ```
-To see more details you can increase the verbosity of the compiler.
+To see more details, you can increase the verbosity of the compiler.
 ```
 agda -v 2 Algebraic/TerminalCapsules.agda
 ```
-If you would like to experiment with connecting this code with other software systems such as a computer algebra system you can compile the libraries to Haskell.
+If you would like to experiment with connecting this code with other software systems such as a computer algebra system, then you can compile the libraries to Haskell.
 ```
 agda --compile Algebraic/TerminalCapsules.agda
 ```
