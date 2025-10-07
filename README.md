@@ -81,6 +81,6 @@ A special case of the variety of groups demonstrating characteristic structure. 
  * Peter A. Brooksbank, Bucknell University
  * Heiko Dietrich, Monash University
  * Joshua Maglione, University of Galway
- * E.A. O'Brien, University of Auckland
+ * Eamonn O'Brien, University of Auckland
  * James B. Wilson, Colorado State University
 
