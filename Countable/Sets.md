@@ -352,6 +352,8 @@ To form a category it is necessary to reflect the source identity and target ide
 ```
 The relevant laws of these operators takes us towards inhabiting our category type.
 
+<!--
 ## Axioms
 
 These are done in [Axioms](ConFunCat.md)
+-->
