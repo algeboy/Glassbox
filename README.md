@@ -17,7 +17,9 @@ This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/gettin
 
 To compile the minimal working example install Agda 2.8, clone this repo into a working folder with access to your agda installation, and run:
 ```
-agda Algebraic/Capsules.agda
+git clone https://github.com/algeboy/Glassbox.git
+cd Glassbox
+agda Algebraic/TerminalCapsules.agda
 ```
 A successful compilation will report no errors found.
 
