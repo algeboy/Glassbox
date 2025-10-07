@@ -80,13 +80,13 @@ tgtOrgProof ▦ = refl
 ```
 
 ### Identities with state
-The remaining cases involve state, i.e. we work with ranges $[n]$ where $n$ can vary. This means that when we create $f:\mathbb{N}\to [n]$ and consider target $(\triangleleft f):[n]\to [n]$ we know by construction that $n=m$, i.e. `refl : n ≡ n` but we must transport  that evidence to the function compostion to enable the proof.  Here is the case setup.
+The remaining cases involve state, i.e. we work with ranges $[n]$ where $n$ can vary. This means that when we create $f:\mathbb{N}\to [n]$ and consider target $(\triangleleft f):[n]\to [n]$ we know by construction that $n=m$, i.e. `refl : n ≡ n` but we must transport  that evidence to the function composition to enable the proof.  Here is the case setup.
 ```agda
 tgtOrgProof (F←F {m} {n} f₀) = helper where
     helper : (F←F {n} id ← F←F {m} {n} f₀) ≡ F←F {m} {n} f₀
     helper = {!!}
 ```
-To fill the hole we simply use the decideable equality tests $n=n$ thus removing the dependence on state.  We then continue with to transport that evidence to the function extensionality method as in the stateless case.
+To fill the hole we simply use the decidable equality tests $n=n$ thus removing the dependence on state.  We then continue with to transport that evidence to the function extensionality method as in the stateless case.
 ```agda
 tgtOrgProof (F←F {m} {n} f₀) = helper where
     helper : (F←F {n} id ← F←F {m} {n} f₀) ≡ F←F {m} {n} f₀
@@ -152,7 +152,7 @@ tgtCompProof (F←F {c} {d} g₀) (F←F {a} {b} f₀)
     ... | yes refl = refl -- When b ≡ c, both sides work out to be equal
     ... | no _ = refl     -- When b ≢ c, both sides give ▦
 ```
-Because this is ultimately about targets it will not depend on this evidence, it just needs the evidence to move further into the proof.  Without this the type checker is faced with the option of outputing the error marker instead of the composition.  This is why it is necessary.
+Because this is ultimately about targets it will not depend on this evidence, it just needs the evidence to move further into the proof.  Without this the type checker is faced with the option of outputting the error marker instead of the composition.  This is why it is necessary.
 
 From here we simply need to consider all 27 cases.
 
@@ -228,19 +228,19 @@ RHS: g ← ▦
 LHS: g ◄ ← ▦
      ▦
 ```
-So we need to do this in this order, composing with the constructo `(_◄)` after the fact with the source.   This requires turnning the constructor into a function which can be done with a lambda which might look strange but simply takes in `q` and returns `q ◄`.  That might look like
+So we need to do this in this order, composing with the constructo `(_◄)` after the fact with the source.   This requires turning the constructor into a function which can be done with a lambda which might look strange but simply takes in `q` and returns `q ◄`.  That might look like
 ```agda
 p : (g ← ▦) ≡ (g ◄ ← ▦)
 cong (λ q → (q ◄)) p 
 ```
-Fortunately since `p` is filled by `refl` this bottoms out to `cong` of a `refl` which is infact another `refl`.  So this thing can at times be proved by the compiler directly.  But you will need to give it hints by case splitting a bit more.  Here is what worked for me.
+Fortunately since `p` is filled by `refl` this bottoms out to `cong` of a `refl` which is in fact another `refl`.  So this thing can at times be proved by the compiler directly.  But you will need to give it hints by case splitting a bit more.  Here is what worked for me.
 ```agda
 srcCompProof (F←F g₀) ▦ = refl
 srcCompProof (F←ℕ g₀) ▦ = refl
 srcCompProof (ℕ←F g₀) ▦ = refl
 srcCompProof (ℕ←ℕ g₀) ▦ = refl
 ```
-By exposing the inner term `g₀` the compiler can properly predict which reduction to apply when resolving the equation. As usual, all these `refl` look the same which muddys our understanding as readers but if you got in to the types you would see each is a different variation based on `cong (λ q₀ → (F←F {m} {n} q₀ ◄)) p`, etc. for each consturctor, which are the right ones for the return type.
+By exposing the inner term `g₀` the compiler can properly predict which reduction to apply when resolving the equation. As usual, all these `refl` look the same which muddies our understanding as readers but if you got in to the types you would see each is a different variation based on `cong (λ q₀ → (F←F {m} {n} q₀ ◄)) p`, etc. for each constructor, which are the right ones for the return type.
 
 ## Associativity
 
@@ -250,7 +250,7 @@ There is an straight-forward Agda ready proof of associativity of composition wi
         → (h ∘ g) ∘ f ≡ h ∘ (g ∘ f) 
 ∘-assoc = refl
 ```
-Our job is to wrap it.  We can have Agda fill in proofs that don't need many hints like some of the fail cases.
+Our job is to wrap it.  We can allow Agda to fill in proofs that don't need many hints like some of the fail cases.
 ```agda
 wrap-∘-assoc : (h g f : ConFun)
                 → ((h ← (g ← f)) ≡ ((h ← g) ← f))
@@ -311,7 +311,7 @@ wrap-∘-assoc (ℕ←F {y} h₀) (F←F {w} {x} g₀) (F←ℕ {v} f₀)  with 
                 (sym (trans (cong (_← F←ℕ f₀) (isHom-ℕFF h₀ g₀ q))
                             (isHom-ℕFℕ (h₀ ∘ subst Fin q ∘ g₀) f₀ p))))
 ```
-Now there is an annoying issue I have not figured out.  When this fails it can fail for 3 reasons: $\neg p$, $\neg q$ or both.  This means that the way we fail is different.  So once more we trap ourselves with partial cases.   But all fo these are going to bottom out as ▦ which means these will be `refl`.  However having paired the `p,q` is now seems trapped.  So `refl` alone doesn't quit do it.  But you can simply eleminate the contradition.
+Now there is an annoying issue I have not figured out.  When this fails it can fail for 3 reasons: $\neg p$, $\neg q$ or both.  This means that the way we fail is different.  So once more we trap ourselves with partial cases.   But all of these are going to bottom out as ▦ which means these will be `refl`.  However having paired the `p,q` is now seems trapped.  So `refl` alone doesn't quit do it.  But you can simply eliminate the contradiction.
 ```agda
 wrap-∘-assoc (ℕ←F {y} h₀) (F←F {w} {x} g₀) (F←ℕ {v} f₀)  with pairwiseEq v w x y
 ... | yes (p , q) =  trans (cong (ℕ←F h₀ ←_) (isHom-FFℕ g₀ f₀ p))
