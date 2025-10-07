@@ -35,7 +35,7 @@ open import Algebraic.Signatures
 open import Countable.Sets using (ConSet; asSet; F; F←F)
 open import Algebraic.Homomorphism
 
-module Algebraic.CyclicGroups where
+module Algebraic.Groups.CyclicGroups where
 
 -----------------------------------------------------
 -- Group Signature using the type Signature from Algebraic.Signatures
