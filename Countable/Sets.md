@@ -6,7 +6,7 @@ We describe a type for functions between countable sets.  Because we are making 
 
 In order to treat categories as algebraic structures we have a two step process of unifying all morphisms into a single type.
 
-It is highly probably that some of these manipulations can be repeated without the constructs used here more efficiently and generally.  There are two philosophies in our choice.  First, we are not native speakers of Agda and therefore are unaware of its many opportunities.  Second, we want to expose the details in a manner that a more novice user such as a member of our own community from Computational Algebra but new to theorem provers can experience some of the learning we have benefited from in creating this prototype.
+It is highly probably that some of these manipulations can be repeated more efficiently and generally without the constructs used here. There are two motivations for our choice.  First, we are not native speakers of Agda and therefore are unaware of its many opportunities.  Second, we want to expose the details in a manner that a more novice user such as a member of our own community from Computational Algebra but new to theorem provers can experience some of the learning we have benefited from in creating this prototype.
 
 ## Constructive Sets
 
@@ -16,7 +16,7 @@ First we unify the objects
 ```math
 \text{ConSet} := \{\mathbb{N}\}\sqcup \bigsqcup_{n:\mathbb{N}}[n]
 ```
-There is a problem with using a $\Sigma$ type which is that the terms here are types themselves and thus comparison fall into undecidable territory.  In general, comparing $A,B:Type$ via $A=_{Type}B$ is not generally a decidable type. So a proof involving valid composition of functions becomes impossible in general.  But we are pulling back to specifically constructed set $\mathbb{N}$ and $[n]$. If we keep track of that information, we can in fact decide equality as sets because our constructors have transport and therefore
+There is a problem with using a $\Sigma$ type which is that the terms here are types themselves and thus comparison falls into undecidable territory.  In general, comparing $A,B:Type$ via $A=_{Type}B$ is not generally a decidable type. So a proof involving valid composition of functions becomes impossible in general.  But we are pulling back to specifically constructed set $\mathbb{N}$ and $[n]$. If we keep track of that information, we can in fact decide equality as sets because our constructors have transport and therefore
 ```math
     m=n \to [m]=[n]
 ```
