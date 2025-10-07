@@ -1,19 +1,21 @@
 # Glassbox <!-- omit in toc --> 
 
-This is based on work from [Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors). Our goal is to produce a cyclic bicapsule. There are still holes for proofs; see the [Issues](https://github.com/algeboy/Glassbox/issues) for more details.
+The aim of the Glassbox project is to build a new model of computation 
+for algebraic structures that requires each input to be passed with 
+a certificate of correctness. This repository contains an Agda implementation of
+theory developed in [Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors) and serves, in part, as a proof of the glassbox concept. 
+Its specific goal is to produce a type-checked cyclic bicapsule. The authors welcome collaboration on the project, and encourage interested parties to visit the [Issues](https://github.com/algeboy/Glassbox/issues) area to learn more about the outstanding challenges.
 
-This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html) version 2.8. This also uses the [Agda stdlib](https://github.com/agda/agda-stdlib) and [cubical](https://github.com/agda/cubical).
+This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html) version 2.8. It also uses the [Agda stdlib](https://github.com/agda/agda-stdlib) and [cubical](https://github.com/agda/cubical).
 
 - [Algebraic](#algebraic)
 	- [Groups](#groups)
 - [Countable](#countable)
-- [Practice](#practice)
 - [Authors](#authors)
-- [Acknowledgements](#acknowledgements)
 
 ## Minimal Working Example
 
-To compile the minimal working example install Agda 2.8 via above steps, clone this repo into a working folder with access to your agda installation and run this.
+To compile the minimal working example install Agda 2.8, clone this repo into a working folder with access to your agda installation, and run:
 ```
 agda Algebraic/Capsules.agda
 ```
@@ -35,10 +37,6 @@ Since it is an abstract category, it involves only its functions which are calle
 
 *This module assumes function extensionality.*
 
-## Practice
-
-We have included some of the many files and tests we developed along the way in case anyone might learn from these.
-
 ---
 
 ## Authors
@@ -49,6 +47,3 @@ We have included some of the many files and tests we developed along the way in 
  * E.A. O'Brien, University of Auckland
  * James B. Wilson, Colorado State University
 
-## Acknowledgements
-
-We thank John Power and Mima Stanojkovski for comments on a draft. Brooksbank was supported by NSF grant DMS-2319371. Maglione was supported by DFG grant VO 1248/4-1 (project number 373111162) and DFG-GRK 2297. O’Brien was supported by the Marsden Fund of New Zealand Grant 23-UOA-080 and by a Research Award of the Alexander von Humboldt Foundation. Wilson was supported by a Simons Foundation Grant identifier 636189 and by NSF grant DMS-2319370.
