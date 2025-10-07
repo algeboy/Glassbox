@@ -9,16 +9,16 @@ Its specific goal is to produce a type-checked cyclic bicapsule.
 
 We welcome collaboration on the project, and encourage interested parties to visit the [Issues](https://github.com/algeboy/Glassbox/issues) area to learn more about the outstanding challenges.
 
-This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html) version 2.8. It also uses the [Agda stdlib](https://github.com/agda/agda-stdlib) and [cubical](https://github.com/agda/cubical).
+This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html) version 2.7 or higher. It also uses the [Agda stdlib](https://github.com/agda/agda-stdlib) and [cubical](https://github.com/agda/cubical).
 
+- [Countable](#countable)
 - [Algebraic](#algebraic)
 	- [Groups](#groups)
-- [Countable](#countable)
 - [Authors](#authors)
 
 ## Minimal Working Example
 
-To compile a minimal working example, first install Agda 2.8, then clone this repo into a working folder with access to your agda installation, and run:
+To compile a minimal working example, first install Agda 2.7 or higher, then clone this repo into a working folder with access to your agda installation, and run:
 ```
 git clone https://github.com/algeboy/Glassbox.git
 cd Glassbox
@@ -43,22 +43,36 @@ The generated Haskell code will appear in a new folder in the same root folder l
 
 The present code compiles the so-called "Terminal Capsule" which encodes the fact that the trivial quotient of any algebraic structure is always characteristic.  While not a surprise, the point of this experiment is to properly develop all the necessary data types and actions.  Algorithms to compute interesting characteristic structure requires either developing computational algebra algorithms within Agda itself (a slow and likely inefficient process) or more practically transporting the computations through the Haskell interface to an existing Computer Algebra System.
 
-
-## Algebraic 
-
-A minimal demonstration of universal algebra varieties and their associated abstract categories.  This interprets the algebras as objects on [countable sets](#countable).  Since these categories are abstract, we  consider only their homomorphisms so they are called `Hom` which is a subtype of `ConFun`.  The abstract categories are then demonstrated to inhabit algebraic structures themselves, but now in a larger universe for which we use Agda's own `Set`.
-
-### Groups
-
-A special case of the variety of groups demonstrating characteristic structure.
+---
 
 ## Countable 
 
 A minimal demonstration of a category of countable sets.  This is created as an abstract category of functions between natural numbers and intervals.  This is a skeleton category, so it is categorically equivalent to $Sets$ for the Zermelo Set Theory without Replacement or Choice.  However, as this is a minimal example, we do not include most of the necessary enrichments to explore a Set Theory.  In particular, we do not expose topos properties.
 
-Since it is an abstract category, it involves only its functions which are called `ConFun` for "constructable functions".
+The relevant files are 
+ * `Countable/Sets.agda` which sets up the objects and morphisms of this category; see documentation [Sets](Countable/Sets.md).
+ * `Countable/SetCategory.agda` which wraps the sets into an abstract category using the algebraic definitions of `Algebraic`; see documentation [Set Category](Countable/SetCategory.md). Since `Sets` is an abstract category, it involves only its functions which are called `ConFun` for "constructable functions".
+ * `Countable/SetLaws.agda` this provides proofs of all the abstract category laws and is a full demonstration of inhabiting the abstract category type.
+> **Technical Note.** This file uses the tag `{-# OPTIONS --allow-unsolved-metas #-}` which is to avert warnings about potential holes.  If inspected, the holes in this file are actually confined to proofs of negation to satisfy the type-checker's need to have something to return if a contradiction is raised.  Since contradications cannot arrise, such holes are unreachable and thus this does not represent an actual gap.
 
-*This module assumes function extensionality.*
+As implemented, this module assumes function extensionality.  However we have also tested this under univalence axioms with Cubical agda to remove this postulate. 
+
+## Algebraic 
+
+A minimal demonstration of universal algebra varieties and their associated abstract categories.  This interprets the algebras as objects on [countable sets](#countable).  Since these categories are abstract, we consider only their homomorphisms so they are called `Hom` which is a subtype of `ConFun`.  The abstract categories are then demonstrated to inhabit algebraic structures themselves, but now in a larger universe for which we use Agda's own `Set`.
+
+Relevant files
+ * `Algebraic/Structures.agda` develops the relevant data types of algebraic structures in the form of universal algebra.  Specifically instead of a heirarchy of named algebras (e.g. groups, rings, monoids...) every algebraic structure is a [countable sets](#countable) with operations form a signature; see also `Algebraic/Signatures.agda`.  Details found in [Structures Documentation](Algebraic/Structures.md)
+ * `Algebraic/Varieties.agda` adds equations and equational laws to algebraic structures, i.e. **varieties** in the sense of universal algebra.  Supported by `Algebraic/Equations.agda`; see [Varieties Documentation](Algebraic/Varieties.md).
+ * `Algebraic/Homomorphism.agda` collects the data types necessary for homomorphisms of algebraic structures.  As these are homomorphisms of [countable sets](#countable) they actually take the type `ConFun`; see [Homomorphisms](Algebraic/Homomorphism.md).
+ * `Algebraic/HomCategories.agda` structures the homomorphisms of algebraic structures on `ConFun` into categories in a variety of abstract categories `AbsCat` (supported by `Algebraic/AbstractCategory.agda`)
+ * `Algebraic/Capsules.agda` this is the main algebraic vehical to encode natural transformations and thus to model characteristic structures as aglebraic data.
+ * `Algebraic/TerminalCapsules.agda` the capsule representing the trivial quotient of an algebraic structure $A\to 0$ where $0$ is a terminal algebra, i.e. the algebraic structure on a set of size 1.
+
+### Groups
+
+A special case of the variety of groups demonstrating characteristic structure.  An aspirational future feature is to develop an interface from these Agda types to a Computer Algebra System that computes relevant characteristic structure through efficient means and pass along the data to the certification with types as done in Agda.
+
 
 ---
 
