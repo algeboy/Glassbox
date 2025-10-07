@@ -3,7 +3,7 @@
 The aim of the Glassbox project is to build a new model of computation for algebraic structures that requires each input to be passed with 
 a certificate of correctness. 
 
-This repository contains an Agda implementation of theory developed in [Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors) and serves, in part, as a proof of the glassbox concept. 
+This repository contains an Agda implementation of theory developed in [Categorification of characteristic structures](https://arxiv.org/abs/2502.01138) by the [authors](#authors) and serves, in part, as a proof of the Glassbox concept. 
 
 Its specific goal is to produce a type-checked cyclic bicapsule. 
 
