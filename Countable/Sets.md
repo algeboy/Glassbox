@@ -36,14 +36,14 @@ data ConSet where
     N : ConSet
     F : (n : ℕ) → ConSet
 ```
-Note, `ℕ` is a unicode character allowed in Agda, but we have it already in use since we imported it from the [standard library](https://github.com/agda/agda-stdlib) as a natural number type.  Here, we are wrapping it, so we need a new characater `N`.  When building algebraic structures, we need to convert `ConSet` into the Agda's types, so we use 
+Note, `ℕ` is a unicode character allowed in Agda, but we have it already in use since we imported it from the [standard library](https://github.com/agda/agda-stdlib) as a natural number type.  Here, we are wrapping it, so we need a new character `N`.  When building algebraic structures, we need to convert `ConSet` into Agda's types, so we use 
 ```agda
 asSet : ConSet → Set
 asSet N = ℕ
 asSet (F n) = Fin n
 ```
 
-Here is a demonstration of how one might try to make a decideable equality on `Set`:
+Here is a demonstration of how one might try to make a decidable equality on `Set`:
 ```agda
 test : (A B : Set) -> Maybe A ≡ B
 test A B with Dec (A ≡ B)
@@ -63,7 +63,7 @@ isEqual _ _ = nothing
 ```
 Obviously the complexity is in length of code as we now have to carry out all the case distinctions, but mismatches in the cases lead to failures, so it is somewhat manageable.
 
-> **Remark** It may seem ironic that Agda has carefully curated an environment where types are so specific that you cannot even attempt to compose functions with mismatched types.  Here, we are attempting to erase this difference but not without a purpose however.  We are interested in extending composition of functions from the *partial* binary operator to a *total* binary operator with an explicit error token.  This allows us to then model the category of sets within a variety rather than in a quasi-variety.  This allows us to begin performing computations on categories as algebras in their own right.  As a foundation for mathematics or programming one of course should stick with Agda universes.
+> **Remark** It may seem ironic that Agda has carefully curated an environment where types are so specific that you cannot even attempt to compose functions with mismatched types.  Here, we are attempting to erase this difference but not without a purpose however.  We are interested in extending composition of functions from the *partial* binary operator to a *total* binary operator with an explicit error token.  This allows us to then model the category of sets within a variety rather than in a quasi-variety.  This also allows us to begin performing computations on categories as algebras in their own right.  As a foundation for mathematics or programming, one of course should stick with the Agda universes.
 
 ### Expanding the constructive sets.
 
@@ -98,7 +98,7 @@ The morphisms are thus unified as well.
 \{f:[m]\to [n]\}
 \end{array}
 ```
-We develop this as a further inductive type.  Anticipating that composition is a partial function that we want to explicitly make total, we add an error marker.  (Note Agda uses $\bot$ for its void type, and although it is not in our scope, it is still too common to find exercises and help in agda with this assigned role, so it is safer from our perspective to introduce a different symbol `▦` for error marking.)
+We develop this as a further inductive type.  Anticipating that composition is a partial function that we want to explicitly make total, we add an error marker.  (Note Agda uses $\bot$ for its void type and, although it is not in our scope, it is still too common to find exercises and help in agda with this assigned role, so it is safer from our perspective to introduce a different symbol `▦` for error marking.)
 ```agda
 data ConFun : Set where
     ℕ←ℕ : (f : ℕ → ℕ) → ConFun
