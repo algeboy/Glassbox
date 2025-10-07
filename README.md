@@ -53,7 +53,7 @@ The relevant files are
  * `Countable/Sets.agda` which sets up the objects and morphisms of this category. See the documentation [Sets](Countable/Sets.md) for further details.
  * `Countable/SetCategory.agda` which wraps the sets into an abstract category using the algebraic definitions of `Algebraic`. See the documentation in [Set Category](Countable/SetCategory.md). Since `Sets` is an abstract category, it involves only its functions which are called `ConFun` for "constructable functions".
  * `Countable/SetLaws.agda` provides proofs of all the abstract category laws and is a full demonstration of inhabiting the abstract category type.
-> **Technical Note.** This file uses the tag `{-# OPTIONS --allow-unsolved-metas #-}` which is to avert warnings about potential holes.  If inspected, the holes in this file are actually confined to proofs of negation to satisfy the type-checker's need to have something to return if a contradiction is raised.  Since contradications cannot arise, such holes are unreachable and thus this does not represent an actual gap.
+> **Technical Note.** This file uses the tag `{-# OPTIONS --allow-unsolved-metas #-}` which is to avert warnings about potential holes.  If inspected, the holes in this file are actually confined to proofs of negation to satisfy the type-checker's need to have something to return if a contradiction is raised.  Since contradictions cannot arise, such holes are unreachable and thus this does not represent an actual gap.
 
 As implemented, this module assumes function extensionality.  However, we have also tested this under univalence axioms with Cubical agda to remove this postulate. 
 
@@ -63,7 +63,7 @@ A minimal demonstration of universal algebra varieties and their associated abst
 
 Relevant files
  * `Algebraic/Structures.agda` develops the relevant data types of algebraic structures in the form of universal algebra.  Specifically instead of a hierarchy of named algebras (such as groups, rings, and monoids) every algebraic structure is a [countable set](#countable) with operations forming a signature; see also `Algebraic/Signatures.agda`.  See [Structures Documentation](Algebraic/Structures.md) for details.
- * `Algebraic/Varieties.agda` adds equations and equational laws to algebraic structures, namely **varieties** in the sense of universal algebra. This file is suuported by `Algebraic/Equations.agda`. See [Varieties Documentation](Algebraic/Varieties.md) for details.
+ * `Algebraic/Varieties.agda` adds equations and equational laws to algebraic structures, namely **varieties** in the sense of universal algebra. This file is supported by `Algebraic/Equations.agda`. See [Varieties Documentation](Algebraic/Varieties.md) for details.
  * `Algebraic/Homomorphism.agda` collects the data types necessary for homomorphisms of algebraic structures.  Since these are homomorphisms of [countable sets](#countable) they take the type `ConFun`. See [Homomorphisms](Algebraic/Homomorphism.md) for details.
  * `Algebraic/HomCategories.agda` structures the homomorphisms of algebraic structures on `ConFun` into categories in a variety of abstract categories `AbsCat`. The file is supported by `Algebraic/AbstractCategory.agda`.
  * `Algebraic/Capsules.agda` is the main algebraic vehicle to encode natural transformations, and hence to model characteristic structures as algebraic data.
@@ -71,7 +71,7 @@ Relevant files
 
 ### Groups
 
-A special case of the variety of groups demonstrating characteristic structure.  An aspirational feature is to develop an interface from these Agda types to a Computer Algebra System that computes relevant characteristic structure efficiently and passes along the data to the certification with types as done in Agda.
+A special case of the variety of groups demonstrating characteristic structure.  An aspiration is to develop an interface from these Agda types to a Computer Algebra System that computes relevant characteristic structure efficiently and passes along the data to the certification with types as done in Agda.
 
 
 ---
