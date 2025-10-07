@@ -78,7 +78,7 @@ A special case of the variety of groups demonstrating characteristic structure. 
 
 ## Authors
 
- * Peter A. Brooksbank, University of Bucknell
+ * Peter A. Brooksbank, Bucknell University
  * Heiko Dietrich, Monash University
  * Joshua Maglione, University of Galway
  * E.A. O'Brien, University of Auckland
