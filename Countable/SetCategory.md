@@ -278,7 +278,7 @@ Instead of a single `refl` we first have to resolve where the failure is with a 
 
 ### Composing impossible
 
-There are number of incompatible composition based purely on constructors.  For example `ℕ←F` composed with `ℕ←F`.  These are mostly `relf`.  As above there are cases that need to break down based on who failure emerges, i.e. is it because stateful compositions can fail?  If so you need to make a decidable check like this.
+There are numerous incompatible composition based purely on constructors.  For example `ℕ←F` composed with `ℕ←F`.  These are mostly `relf`.  As above there are cases that need to break down based on who failure emerges, i.e. is it because stateful compositions can fail?  If so you need to make a decidable check like this.
 ```agda
 wrap-∘-assoc (ℕ←ℕ h₀) (ℕ←F {w} g₀) (F←ℕ {v} f₀) with v ≟ w
 ... | yes p = refl
@@ -327,6 +327,6 @@ The only subtle point is that you need to inhabit the proof of the impossible ty
 
 This feels like a hack but I read Agda permits it.
 
-Now back of the envelop, if you fix h and g types there are still 5 cases for 5, namely the 5 types of `ConFun` so you have 125 cases, and very few can be packaged by wildcards but it does seem like a bit of refactoring would be possible or some tactics.  
+Now back of the envelope: if you fix h and g types there are still 5 cases for 5, namely the 5 types of `ConFun` so you have 125 cases, and very few can be packaged by wildcards but it does seem like a bit of refactoring would be possible or some tactics.  
 
 
