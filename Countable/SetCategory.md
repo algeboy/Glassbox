@@ -323,7 +323,7 @@ wrap-∘-assoc (ℕ←F {y} h₀) (F←F {w} {x} g₀) (F←ℕ {v} f₀)  with 
     impossible : (v ≡ w) × (x ≡ y)
     impossible = {!!} -- Don't fill a hole that can't be reached.
 ```
-The only subtle point though is that you need to inhabit the proof of the impossible type (the false claim of a pair of equalities.). That is impossible so we inhabit with a hole! 
+The only subtle point is that you need to inhabit the proof of the impossible type (the false claim of a pair of equalities.). That is impossible so we inhabit with a hole! 
 
 This feels like a hack but I read Agda permits it.
 
