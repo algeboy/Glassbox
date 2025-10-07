@@ -28,7 +28,7 @@ This is a hint of how we should add further data types.
 
 **We keep track of their constructors and rely on equality of the introductory data instead of the outcome.**  
 
-This is perhaps notationally awkward and could be done within a programming language.  But exposing things at this level is a helpful observation of the process and avoids various problems that emerge with how Agda and other type checker internally frame their Set types.
+This is perhaps notationally awkward and could be done within a programming language.  But exposing things at this level is a helpful observation of the process and avoids -->various problems that emerge with how Agda and other type checker internally frame their Set types.
 
 So we use an inductive type to unify the constructive sets we consider.
 ```agda
@@ -350,7 +350,7 @@ To form a category it is necessary to reflect the source identity and target ide
     ◄_ (ℕ←ℕ f)         = ℕ←ℕ (λ x → x)
     ◄_ (▦)             = ▦
 ```
-The relevant laws of these operators takes us towards inhabiting our category type.
+The relevant laws of these operators take us towards inhabiting our category type.
 
 <!--
 ## Axioms
