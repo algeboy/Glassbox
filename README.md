@@ -52,7 +52,7 @@ A minimal demonstration of a category of countable sets.  This is created as an 
 The relevant files are 
  * `Countable/Sets.agda` which sets up the objects and morphisms of this category. See the documentation [Sets](Countable/Sets.md) for further details.
  * `Countable/SetCategory.agda` which wraps the sets into an abstract category using the algebraic definitions of `Algebraic`. See the documentation in [Set Category](Countable/SetCategory.md). Since `Sets` is an abstract category, it involves only its functions which are called `ConFun` for "constructable functions".
- * `Countable/SetLaws.agda` this provides proofs of all the abstract category laws and is a full demonstration of inhabiting the abstract category type.
+ * `Countable/SetLaws.agda` provides proofs of all the abstract category laws and is a full demonstration of inhabiting the abstract category type.
 > **Technical Note.** This file uses the tag `{-# OPTIONS --allow-unsolved-metas #-}` which is to avert warnings about potential holes.  If inspected, the holes in this file are actually confined to proofs of negation to satisfy the type-checker's need to have something to return if a contradiction is raised.  Since contradications cannot arise, such holes are unreachable and thus this does not represent an actual gap.
 
 As implemented, this module assumes function extensionality.  However, we have also tested this under univalence axioms with Cubical agda to remove this postulate. 
