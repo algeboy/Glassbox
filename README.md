@@ -30,7 +30,7 @@ Checking Algebraic.TerminalCapsules (/Users/algeboy/CODE/test/Glassbox/Algebraic
   ...
   Checking Countable.SetCategory (/Users/algeboy/CODE/test/Glassbox/Countable/SetCategory.agda).
 ```
-To see more details, you can increase the verbosity of the compiler.
+To see more details, increase the verbosity of the compiler.
 ```
 agda -v 2 Algebraic/TerminalCapsules.agda
 ```
