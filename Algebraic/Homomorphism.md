@@ -1,6 +1,6 @@
 # Homomorphism
 
-Homomorphisms are designed to form an abstract category.  This will mean they are a subtype to `ConFun` but they generate a subcategory of `ConFun`'s categeory.
+Homomorphisms are designed to form an abstract category.  This will mean they are a subtype to `ConFun` but they generate a subcategory of `ConFun`'s category.
 
 To make an abstract category we need to split on the case that $f\neq \bot$, which should should count as a homomorphism but not in the sense of the homomorphism property.
 
