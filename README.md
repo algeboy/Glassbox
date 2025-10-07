@@ -40,7 +40,7 @@ agda --compile Algebraic/TerminalCapsules.agda
 ```
 The generated Haskell code will appear in a new folder in the same root folder likely called `MAlonzo` and contain several necessary files along with those of this project.
 
-The present code compiles the so-called "Terminal Capsule" which encode the fact that the trivial quotient of any algebraic structure is always characteristic.  While not a surprise, the point of this experiment is to properly develop all the necessary data types and actions.  Replacing with algorithms to compute interesting characteristic structure requires either developing computational algebra algorithms with Agda itself (a slow and likely inefficient process) or more practically transporting the computations through the Haskell interface to an existing Computer Algebra System.
+The present code compiles the so-called "Terminal Capsule" which encodes the fact that the trivial quotient of any algebraic structure is always characteristic.  While not a surprise, the point of this experiment is to properly develop all the necessary data types and actions.  Algorithms to compute interesting characteristic structure requires either developing computational algebra algorithms within Agda itself (a slow and likely inefficient process) or more practically transporting the computations through the Haskell interface to an existing Computer Algebra System.
 
 
 ## Algebraic 
