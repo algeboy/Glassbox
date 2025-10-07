@@ -66,7 +66,7 @@ Relevant files
  * `Algebraic/Varieties.agda` adds equations and equational laws to algebraic structures, namely **varieties** in the sense of universal algebra. This file is suuported by `Algebraic/Equations.agda`. See [Varieties Documentation](Algebraic/Varieties.md) for details.
  * `Algebraic/Homomorphism.agda` collects the data types necessary for homomorphisms of algebraic structures.  Since these are homomorphisms of [countable sets](#countable) they take the type `ConFun`. See [Homomorphisms](Algebraic/Homomorphism.md) for details.
  * `Algebraic/HomCategories.agda` structures the homomorphisms of algebraic structures on `ConFun` into categories in a variety of abstract categories `AbsCat`. The file is supported by `Algebraic/AbstractCategory.agda`.
- * `Algebraic/Capsules.agda` is the main algebraic vehical to encode natural transformations, and hence to model characteristic structures as algebraic data.
+ * `Algebraic/Capsules.agda` is the main algebraic vehicle to encode natural transformations, and hence to model characteristic structures as algebraic data.
  * `Algebraic/TerminalCapsules.agda` the capsule representing the trivial quotient of an algebraic structure $A\to 0$ where $0$ is a terminal algebra. This is the algebraic structure on a set of size 1.
 
 ### Groups
