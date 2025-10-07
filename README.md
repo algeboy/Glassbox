@@ -17,7 +17,7 @@ This code is compatible with [Agda](https://agda.readthedocs.io/en/latest/gettin
 
 ## Minimal Working Example
 
-To compile the minimal working example, first install Agda 2.8, then clone this repo into a working folder with access to your agda installation, and run:
+To compile a minimal working example, first install Agda 2.8, then clone this repo into a working folder with access to your agda installation, and run:
 ```
 git clone https://github.com/algeboy/Glassbox.git
 cd Glassbox
