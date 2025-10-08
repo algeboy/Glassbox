@@ -2,7 +2,15 @@
 
 We describe a type for functions between countable sets.  Because we are making a category, we can work up to equivalence, so we treat countable functions by their cardinality.
 
-[ToC]
+* [Constructive Sets](#constructive-sets)
+  - [Expanding the constructive sets](#expanding-the-constructive-sets)
+* [Functions](#functions)
+  - [Example functions](#example-functions)
+  - [Composing](#composing)
+  - [Heteromorphism property](#heteromorphism-property)
+  - [Extending functions](#extending-functions)
+* [Adding source & Target data](#adding-source--target-data)
+* [Axioms](#axioms)
 
 In order to treat categories as algebraic structures we have a two step process of unifying all morphisms into a single type.
 
@@ -10,13 +18,13 @@ It is highly probably that some of these manipulations can be repeated more effi
 
 ## Constructive Sets
 
-Imagine you want a category with two families of objects $\mathbb{N}$ and $[n]=\{0,\ldots, n-1\}$ and functions between these sets as the morphisms. 
+Imagine you want a category with two families of objects $ℕ$ and $[n]=\{0,\ldots, n-1\}$ and functions between these sets as the morphisms. 
 
 First we unify the objects 
 ```math
-\text{ConSet} := \{\mathbb{N}\}\sqcup \bigsqcup_{n:\mathbb{N}}[n]
+\text{ConSet} := \{ℕ\}\sqcup \bigsqcup_{n:ℕ}[n]
 ```
-There is a problem with using a $\Sigma$ type which is that the terms here are types themselves and thus comparison falls into undecidable territory.  In general, comparing $A,B:Type$ via $A=_{Type}B$ is not generally a decidable type. So a proof involving valid composition of functions becomes impossible in general.  But we are pulling back to specifically constructed set $\mathbb{N}$ and $[n]$. If we keep track of that information, we can in fact decide equality as sets because our constructors have transport and therefore
+There is a problem with using a $\Sigma$ type which is that the terms here are types themselves and thus comparison falls into undecidable territory.  In general, comparing $A,B:Type$ via $A=_{Type}B$ is not generally a decidable type. So a proof involving valid composition of functions becomes impossible in general.  But we are pulling back to specifically constructed set $ℕ$ and $[n]$. If we keep track of that information, we can in fact decide equality as sets because our constructors have transport and therefore
 ```math
     m=n \to [m]=[n]
 ```
@@ -45,7 +53,7 @@ asSet (F n) = Fin n
 
 Here is a demonstration of how one might try to make a decidable equality on `Set`:
 ```agda
-test : (A B : Set) -> Maybe A ≡ B
+test : (A B : Set) → Maybe A ≡ B
 test A B with Dec (A ≡ B)
 ...| yes proof = just proof
 ...| no _ = nothing
@@ -111,7 +119,7 @@ Notice this type does not directly reference the object type `ConSet`.  This can
 
 ### Example functions
 
-You can now make any Agda function of type $\mathbb{N}\to \mathbb{N}$, $\mathbb{N}\to [n]$, $[m]\to\mathbb{N}$ or $[m]\to [n]$ and develop it as a `ConFun` type.  Here are some examples.
+You can now make any Agda function of type $ℕ\to ℕ$, $ℕ\to [n]$, $[m]\to ℕ$ or $[m]\to [n]$ and develop it as a `ConFun` type.  Here are some examples.
 ```agda 
     ff : ConFun
     ff = F←F {3} {4} (λ x → # zero)
@@ -133,7 +141,7 @@ Now as we split this into cases some are straight-forward because the types in t
     _←_ (F←ℕ g) (ℕ←F f) = F←F (g ∘ f)
     _←_ (F←ℕ g) (ℕ←ℕ f) = F←ℕ (g ∘ f)
 ```
-We can also place errors where we know the composition is illegal, such as `N` matched with an `F`.  
+We can also place errors where we know the composition is illegal, such as `ℕ` matched with an `F`.  
 ```agda
     _←_ (ℕ←ℕ g) (F←ℕ f) = ▦
     _←_ (ℕ←ℕ g) (F←F f) = ▦
@@ -352,8 +360,6 @@ To form a category it is necessary to reflect the source identity and target ide
 ```
 The relevant laws of these operators take us towards inhabiting our category type.
 
-<!--
 ## Axioms
 
-These are done in [Axioms](ConFunCat.md)
--->
+These are done in [Axioms](SetCategory.md)
