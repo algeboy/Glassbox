@@ -24,6 +24,8 @@ open import Data.Vec as Vec using (Vec; []; _∷_)
 open import Data.Nat as Nat using (ℕ; _+_; zero; suc; _∸_; _%_; _<_; _≤_; _*_)
 open import Data.Nat.DivMod using (m<n⇒m%n≡m; m%n<n; n%n≡0; %-distribˡ-+; m%n%n≡m%n)
 open import Data.Nat.Properties using (+-identityˡ; +-identityʳ; m∸n+n≡m; <⇒≤; +-assoc; m+[n∸m]≡n; +-comm)
+open import Data.Integer as ℤ using (ℤ; +_; -_; _+_; _-_; 0ℤ)
+open import Data.Integer.Properties using () renaming (+-assoc to ℤ-+-assoc; +-identityˡ to ℤ-+-identityˡ; +-identityʳ to ℤ-+-identityʳ; +-inverseˡ to ℤ-+-inverseˡ; +-inverseʳ to ℤ-+-inverseʳ; +-comm to ℤ-+-comm)
 open import Data.String using (String)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; trans; sym)
@@ -32,10 +34,15 @@ open import Data.Vec using ([]; _∷_)
 
 open import Algebraic.Structures
 open import Algebraic.Signatures
-open import Countable.Sets using (ConSet; asSet; F; F←F)
+open import Countable.Sets using (ConSet; asSet; F; F←F) -- Note: Z←Z not yet implemented but needed for infinite cyclic groups
 open import Algebraic.Homomorphism
 
-module Algebraic.Groups.CyclicGroups where
+module Algebraic.Groups.CyclicGroupsNEW where
+
+-- TODO: This postulate represents Z←Z which should be implemented in Countable.Sets
+-- It should represent ℤ as a ConSet for infinite cyclic groups
+postulate Z←Z : ConSet
+postulate Z←Z-spec : asSet Z←Z ≡ ℤ
 
 -----------------------------------------------------
 -- Group Signature using the type Signature from Algebraic.Signatures
@@ -60,7 +67,9 @@ add-op = suc zero
 inv-op : Fin (nOps GroupSig)
 inv-op = suc (suc zero)
 
-
+NMod : (n : ℕ) → Set
+NMod Nat.zero = ℤ 
+NMod (suc n') = Fin (suc n')
 
 -----------------------------------------------------
 -- Group Laws
@@ -95,53 +104,55 @@ record GroupLaws (X : ConSet) (ops : (i : Fin (nOps GroupSig)) → Operator X (p
 
 
 -----------------------------------------------------
--- Cyclic Group (finite) Operations on Fin (suc n) 
+-- Cyclic Group Operations using NMod n
 -----------------------------------------------------
 
--- Addition operation for Fin (suc n) (modular arithmetic)
-fin-add : (n : ℕ) → Vec (Fin (suc n)) 2 → Fin (suc n)
-fin-add n (a ∷ b ∷ []) = fromℕ< (m%n<n (toℕ a + toℕ b) (suc n))
-
--- Example: fin-add 10 (3 ∷ 4 ∷ []) = fromℕ< (m%n<n (3 + 4) 11) = fromℕ< (m%n<n 7 11) = #7
--- Since 7 < 11, the result is Fin element representing 7 in Fin 11
+-- Addition operation for NMod n (with case distinction)
+nmod-add : (n : ℕ) → Vec (NMod n) 2 → NMod n
+nmod-add Nat.zero (a ∷ b ∷ []) = a ℤ.+ b  -- For NMod 0 = ℤ, use integer addition
+nmod-add (suc n') (a ∷ b ∷ []) = fromℕ< (m%n<n (toℕ a Nat.+ toℕ b) (suc n'))  -- For NMod (suc n') = Fin (suc n'), modular arithmetic
 
 
--- Identity element for Fin (suc n)
-fin-identity : (n : ℕ) → Vec (Fin (suc n)) 0 → Fin (suc n)  
-fin-identity n [] = zero
+-- Identity element for NMod n (with case distinction)
+nmod-identity : (n : ℕ) → Vec (NMod n) 0 → NMod n  
+nmod-identity Nat.zero [] = 0ℤ  -- For NMod 0 = ℤ, identity is 0ℤ
+nmod-identity (suc n') [] = zero  -- For NMod (suc n') = Fin (suc n'), identity is zero
 
 
--- Inverse operation for Fin (suc n) (additive inverse in modular arithmetic)
-fin-inverse : (n : ℕ) → Vec (Fin (suc n)) 1 → Fin (suc n)
-fin-inverse n (a ∷ []) = fromℕ< (m%n<n ((suc n) ∸ toℕ a) (suc n))
+-- Inverse operation for NMod n (with case distinction)
+nmod-inverse : (n : ℕ) → Vec (NMod n) 1 → NMod n
+nmod-inverse Nat.zero (a ∷ []) = ℤ.- a  -- For NMod 0 = ℤ, use integer negation
+nmod-inverse (suc n') (a ∷ []) = fromℕ< (m%n<n ((suc n') ∸ toℕ a) (suc n'))  -- For NMod (suc n') = Fin (suc n'), modular inverse
+
 
 
 -----------------------------------------------------
--- Group Law Lemmas for Finite Cyclic Groups: types and proofs
+-- Group Law Lemmas for NMod Groups: types and proofs
 -- stating these is just for illustrative purposes; 
 -- it is not necessary to state these auxiliary lemmas
 -----------------------------------------------------
 
 -- Left identity lemma: 0 + x = x
-fin-left-identity : (n : ℕ) → (x : Fin (suc n)) → 
-  fin-add n (fin-identity n [] ∷ x ∷ []) ≡ x
+nmod-left-identity : (n : ℕ) → (x : NMod n) → 
+  nmod-add n (nmod-identity n [] ∷ x ∷ []) ≡ x
 
 -- Right identity lemma: x + 0 = x  
-fin-right-identity : (n : ℕ) → (x : Fin (suc n)) → 
-  fin-add n (x ∷ fin-identity n [] ∷ []) ≡ x
+nmod-right-identity : (n : ℕ) → (x : NMod n) → 
+  nmod-add n (x ∷ nmod-identity n [] ∷ []) ≡ x
 
 -- Associativity lemma: (x + y) + z = x + (y + z)
-fin-associativity : (n : ℕ) → (x y z : Fin (suc n)) → 
-  fin-add n (fin-add n (x ∷ y ∷ []) ∷ z ∷ []) ≡ 
-  fin-add n (x ∷ fin-add n (y ∷ z ∷ []) ∷ [])
+nmod-associativity : (n : ℕ) → (x y z : NMod n) → 
+  nmod-add n (nmod-add n (x ∷ y ∷ []) ∷ z ∷ []) ≡ 
+  nmod-add n (x ∷ nmod-add n (y ∷ z ∷ []) ∷ [])
 
 -- Left inverse lemma: (-x) + x = 0
-fin-left-inverse : (n : ℕ) → (x : Fin (suc n)) → 
-  fin-add n (fin-inverse n (x ∷ []) ∷ x ∷ []) ≡ fin-identity n []
+nmod-left-inverse : (n : ℕ) → (x : NMod n) → 
+  nmod-add n (nmod-inverse n (x ∷ []) ∷ x ∷ []) ≡ nmod-identity n []
 
 -- Right inverse lemma: x + (-x) = 0
-fin-right-inverse : (n : ℕ) → (x : Fin (suc n)) → 
-  fin-add n (x ∷ fin-inverse n (x ∷ []) ∷ []) ≡ fin-identity n []
+nmod-right-inverse : (n : ℕ) → (x : NMod n) → 
+  nmod-add n (x ∷ nmod-inverse n (x ∷ []) ∷ []) ≡ nmod-identity n []
+
 
 
 -----------------------------------------------------
@@ -150,149 +161,156 @@ fin-right-inverse : (n : ℕ) → (x : Fin (suc n)) →
 
 -- right inverse proof
 
--- Helper functions for modular arithmetic extraction
-mod-extract-left : (a b : ℕ) → (n : ℕ) → (a % (suc n) + b) % (suc n) ≡ (a + b) % (suc n)
-mod-extract-left a b n = 
-  trans (%-distribˡ-+ (a % (suc n)) b (suc n))
-        (trans (cong (λ x → (x + (b % (suc n))) % (suc n)) 
-                     (m%n%n≡m%n a (suc n)))
-               (sym (%-distribˡ-+ a b (suc n))))
+-- Helper functions for modular arithmetic extraction (now with qualified Nat.+)
+mod-extract-left : (a b : ℕ) → (n' : ℕ) → (a % (suc n') Nat.+ b) % (suc n') ≡ (a Nat.+ b) % (suc n')
+mod-extract-left a b n' = 
+  trans (%-distribˡ-+ (a % (suc n')) b (suc n'))
+        (trans (cong (λ x → (x Nat.+ (b % (suc n'))) % (suc n')) 
+                     (m%n%n≡m%n a (suc n')))
+               (sym (%-distribˡ-+ a b (suc n'))))
 
-mod-extract-right : (a b : ℕ) → (n : ℕ) → (a + b % (suc n)) % (suc n) ≡ (a + b) % (suc n)
-mod-extract-right a b n = 
-  trans (%-distribˡ-+ a (b % (suc n)) (suc n))
-        (trans (cong (λ x → (a % (suc n) + x) % (suc n)) 
-                     (m%n%n≡m%n b (suc n)))
-               (sym (%-distribˡ-+ a b (suc n))))
+mod-extract-right : (a b : ℕ) → (n' : ℕ) → (a Nat.+ b % (suc n')) % (suc n') ≡ (a Nat.+ b) % (suc n')
+mod-extract-right a b n' = 
+  trans (%-distribˡ-+ a (b % (suc n')) (suc n'))
+        (trans (cong (λ x → (a % (suc n') Nat.+ x) % (suc n')) 
+                     (m%n%n≡m%n b (suc n')))
+               (sym (%-distribˡ-+ a b (suc n'))))
 
-fin-right-inverse-proof : (n : ℕ) → (x : Fin (suc n)) → 
-  fin-add n (x ∷ fin-inverse n (x ∷ []) ∷ []) ≡ fin-identity n []
-fin-right-inverse-proof n x = 
+nmod-right-inverse-proof : (n : ℕ) → (x : NMod n) → 
+  nmod-add n (x ∷ nmod-inverse n (x ∷ []) ∷ []) ≡ nmod-identity n []
+nmod-right-inverse-proof Nat.zero x = 
+  -- For ℤ: x + (-x) = 0ℤ, this follows from integer properties
+  ℤ-+-inverseʳ x
+nmod-right-inverse-proof (suc n') x = 
+  -- For Fin (suc n'): use modular arithmetic proof
   toℕ-injective (trans (toℕ-fromℕ< _) 
-    (trans (cong (λ y → (toℕ x + y) % (suc n)) (toℕ-fromℕ< _))
-    (trans (mod-extract-right (toℕ x) ((suc n) ∸ toℕ x) n)
-    (trans (cong (λ y → y % (suc n)) (m+[n∸m]≡n (<⇒≤ (toℕ<n x))))
-           (n%n≡0 (suc n))))))
+    (trans (cong (λ y → (toℕ x Nat.+ y) % (suc n')) (toℕ-fromℕ< _))
+    (trans (mod-extract-right (toℕ x) ((suc n') ∸ toℕ x) n')
+    (trans (cong (λ y → y % (suc n')) (m+[n∸m]≡n (<⇒≤ (toℕ<n x))))
+           (n%n≡0 (suc n'))))))
 
 
 -- left inverse proof
 
-fin-left-inverse-proof : (n : ℕ) → (x : Fin (suc n)) → 
-  fin-add n (fin-inverse n (x ∷ []) ∷ x ∷ []) ≡ fin-identity n []
-fin-left-inverse-proof n x = 
+nmod-left-inverse-proof : (n : ℕ) → (x : NMod n) → 
+  nmod-add n (nmod-inverse n (x ∷ []) ∷ x ∷ []) ≡ nmod-identity n []
+nmod-left-inverse-proof Nat.zero x = 
+  -- For ℤ: (-x) + x = 0ℤ, this follows from integer properties
+  ℤ-+-inverseˡ x
+nmod-left-inverse-proof (suc n') x = 
   let
-    inv-x = fin-inverse n (x ∷ [])
-    toℕ-inv-x = toℕ-fromℕ< (m%n<n ((suc n) ∸ toℕ x) (suc n))
-    sum-eq = cong (_+ toℕ x) toℕ-inv-x
-    extract-step = mod-extract-left ((suc n) ∸ toℕ x) (toℕ x) n
-    final-step = trans (cong (λ y → y % (suc n)) (+-comm ((suc n) ∸ toℕ x) (toℕ x)))
-                       (trans (cong (λ y → y % (suc n)) (m+[n∸m]≡n (<⇒≤ (toℕ<n x))))
-                              (n%n≡0 (suc n)))
-    main-eq = trans (cong (λ y → y % (suc n)) sum-eq) (trans extract-step final-step)
+    inv-x = nmod-inverse (suc n') (x ∷ [])
+    toℕ-inv-x = toℕ-fromℕ< (m%n<n ((suc n') ∸ toℕ x) (suc n'))
+    sum-eq = cong (Nat._+ toℕ x) toℕ-inv-x
+    extract-step = mod-extract-left ((suc n') ∸ toℕ x) (toℕ x) n'
+    final-step = trans (cong (λ y → y % (suc n')) (+-comm ((suc n') ∸ toℕ x) (toℕ x)))
+                       (trans (cong (λ y → y % (suc n')) (m+[n∸m]≡n (<⇒≤ (toℕ<n x))))
+                              (n%n≡0 (suc n')))
+    main-eq = trans (cong (λ y → y % (suc n')) sum-eq) (trans extract-step final-step)
   in
     toℕ-injective (trans (toℕ-fromℕ< _) main-eq)
 
 
 -- associativity proof; we need a helper lemma for modular arithmetic associativity
 
-mod-assoc-lemma : (n : ℕ) → (x y z : Fin (suc n)) → 
-                  ((toℕ x + toℕ y) % (suc n) + toℕ z) % (suc n) ≡ 
-                  (toℕ x + (toℕ y + toℕ z) % (suc n)) % (suc n)
-mod-assoc-lemma n x y z = 
-  trans (mod-extract-left (toℕ x + toℕ y) (toℕ z) n)
-        (trans (cong (λ w → w % (suc n)) (+-assoc (toℕ x) (toℕ y) (toℕ z)))
-               (sym (mod-extract-right (toℕ x) (toℕ y + toℕ z) n)))
+mod-assoc-lemma : (n' : ℕ) → (x y z : Fin (suc n')) → 
+                  ((toℕ x Nat.+ toℕ y) % (suc n') Nat.+ toℕ z) % (suc n') ≡ 
+                  (toℕ x Nat.+ (toℕ y Nat.+ toℕ z) % (suc n')) % (suc n')
+mod-assoc-lemma n' x y z = 
+  trans (mod-extract-left (toℕ x Nat.+ toℕ y) (toℕ z) n')
+        (trans (cong (λ w → w % (suc n')) (+-assoc (toℕ x) (toℕ y) (toℕ z)))
+               (sym (mod-extract-right (toℕ x) (toℕ y Nat.+ toℕ z) n')))
 
 
 -- Proof for associativity: (x + y) + z = x + (y + z) using toℕ-injective approach
 
-fin-associativity-proof : (n : ℕ) → (x y z : Fin (suc n)) → 
-  fin-add n (fin-add n (x ∷ y ∷ []) ∷ z ∷ []) ≡ 
-  fin-add n (x ∷ fin-add n (y ∷ z ∷ []) ∷ [])
-fin-associativity-proof n x y z = 
+nmod-associativity-proof : (n : ℕ) → (x y z : NMod n) → 
+  nmod-add n (nmod-add n (x ∷ y ∷ []) ∷ z ∷ []) ≡ 
+  nmod-add n (x ∷ nmod-add n (y ∷ z ∷ []) ∷ [])
+nmod-associativity-proof Nat.zero x y z = 
+  -- For ℤ: (x + y) + z = x + (y + z), this follows from integer associativity
+  ℤ-+-assoc x y z
+nmod-associativity-proof (suc n') x y z =
   toℕ-injective (
     let 
-      -- Left side: toℕ (fin-add n (fin-add n (x ∷ y ∷ []) ∷ z ∷ []))
-      -- This equals: (toℕ (fin-add n (x ∷ y ∷ [])) + toℕ z) % (suc n)
-      lhs : toℕ (fin-add n (fin-add n (x ∷ y ∷ []) ∷ z ∷ [])) ≡ (toℕ (fin-add n (x ∷ y ∷ [])) + toℕ z) % (suc n)
-      lhs = toℕ-fromℕ< (m%n<n (toℕ (fin-add n (x ∷ y ∷ [])) + toℕ z) (suc n))
+      -- Left side: toℕ (nmod-add (suc n') (nmod-add (suc n') (x ∷ y ∷ []) ∷ z ∷ []))
+      -- This equals: (toℕ (nmod-add (suc n') (x ∷ y ∷ [])) + toℕ z) % (suc n')
+      lhs : toℕ (nmod-add (suc n') (nmod-add (suc n') (x ∷ y ∷ []) ∷ z ∷ [])) ≡ (toℕ (nmod-add (suc n') (x ∷ y ∷ [])) Nat.+ toℕ z) % (suc n')
+      lhs = toℕ-fromℕ< (m%n<n (toℕ (nmod-add (suc n') (x ∷ y ∷ [])) Nat.+ toℕ z) (suc n'))
       
-      -- We know: toℕ (fin-add n (x ∷ y ∷ [])) ≡ (toℕ x + toℕ y) % (suc n)
-      xy-eq : toℕ (fin-add n (x ∷ y ∷ [])) ≡ (toℕ x + toℕ y) % (suc n)
-      xy-eq = toℕ-fromℕ< (m%n<n (toℕ x + toℕ y) (suc n))
+      -- We know: toℕ (nmod-add (suc n') (x ∷ y ∷ [])) ≡ (toℕ x + toℕ y) % (suc n')
+      xy-eq : toℕ (nmod-add (suc n') (x ∷ y ∷ [])) ≡ (toℕ x Nat.+ toℕ y) % (suc n')
+      xy-eq = toℕ-fromℕ< (m%n<n (toℕ x Nat.+ toℕ y) (suc n'))
       
-      -- Right side: toℕ (fin-add n (x ∷ fin-add n (y ∷ z ∷ []) ∷ []))
-      -- This equals: (toℕ x + toℕ (fin-add n (y ∷ z ∷ []))) % (suc n)
-      rhs : toℕ (fin-add n (x ∷ fin-add n (y ∷ z ∷ []) ∷ [])) ≡ (toℕ x + toℕ (fin-add n (y ∷ z ∷ []))) % (suc n)
-      rhs = toℕ-fromℕ< (m%n<n (toℕ x + toℕ (fin-add n (y ∷ z ∷ []))) (suc n))
+      -- Right side: toℕ (nmod-add (suc n') (x ∷ nmod-add (suc n') (y ∷ z ∷ []) ∷ []))
+      -- This equals: (toℕ x + toℕ (nmod-add (suc n') (y ∷ z ∷ []))) % (suc n')
+      rhs : toℕ (nmod-add (suc n') (x ∷ nmod-add (suc n') (y ∷ z ∷ []) ∷ [])) ≡ (toℕ x Nat.+ toℕ (nmod-add (suc n') (y ∷ z ∷ []))) % (suc n')
+      rhs = toℕ-fromℕ< (m%n<n (toℕ x Nat.+ toℕ (nmod-add (suc n') (y ∷ z ∷ []))) (suc n'))
       
-      -- We know: toℕ (fin-add n (y ∷ z ∷ [])) ≡ (toℕ y + toℕ z) % (suc n)
-      yz-eq : toℕ (fin-add n (y ∷ z ∷ [])) ≡ (toℕ y + toℕ z) % (suc n)
-      yz-eq = toℕ-fromℕ< (m%n<n (toℕ y + toℕ z) (suc n))
-      
-      -- The core insight: both sides should equal (toℕ x + toℕ y + toℕ z) % (suc n)
-      -- This requires a complex proof about nested modular arithmetic operations
-      -- The key lemma needed is: ((a % n) + b) % n ≡ (a + b) % n
-      -- and ((a + b) % n + c) % n ≡ (a + (b + c)) % n due to associativity
+      -- We know: toℕ (nmod-add (suc n') (y ∷ z ∷ [])) ≡ (toℕ y + toℕ z) % (suc n')
+      yz-eq : toℕ (nmod-add (suc n') (y ∷ z ∷ [])) ≡ (toℕ y Nat.+ toℕ z) % (suc n')
+      yz-eq = toℕ-fromℕ< (m%n<n (toℕ y Nat.+ toℕ z) (suc n'))
       
       -- Use our modular arithmetic lemma for the key step
-      assoc-key : ((toℕ x + toℕ y) % (suc n) + toℕ z) % (suc n) ≡ 
-                  (toℕ x + (toℕ y + toℕ z) % (suc n)) % (suc n)
-      assoc-key = mod-assoc-lemma n x y z
+      assoc-key : ((toℕ x Nat.+ toℕ y) % (suc n') Nat.+ toℕ z) % (suc n') ≡ 
+                  (toℕ x Nat.+ (toℕ y Nat.+ toℕ z) % (suc n')) % (suc n')
+      assoc-key = mod-assoc-lemma n' x y z
       
     in 
-      trans lhs (trans (cong (λ w → (w + toℕ z) % (suc n)) xy-eq) 
+      trans lhs (trans (cong (λ w → (w Nat.+ toℕ z) % (suc n')) xy-eq) 
                        (trans assoc-key 
-                              (trans (cong (λ w → (toℕ x + w) % (suc n)) (sym yz-eq)) 
+                              (trans (cong (λ w → (toℕ x Nat.+ w) % (suc n')) (sym yz-eq)) 
                                      (sym rhs))))
   )
 
 
 -- proof of left identity
 
--- Helper lemma: for any a : Fin (suc n), we have (toℕ a) % (suc n) ≡ toℕ a
-needThis : (n : ℕ) → (a : Fin (suc n)) → ((toℕ a) % (suc n)) ≡ (toℕ a)
-needThis n a = m<n⇒m%n≡m (toℕ<n a)
+-- Helper lemma: for any a : Fin (suc n'), we have (toℕ a) % (suc n') ≡ toℕ a
+needThis : (n' : ℕ) → (a : Fin (suc n')) → ((toℕ a) % (suc n')) ≡ (toℕ a)
+needThis n' a = m<n⇒m%n≡m (toℕ<n a)
 
--- Proof for left identity: 0 + x = x using toℕ-injective approach
-fin-left-identity-proof : (n : ℕ) → (x : Fin (suc n)) → 
-  fin-add n (fin-identity n [] ∷ x ∷ []) ≡ x
-fin-left-identity-proof n x = 
+-- Proof for left identity: 0 + x = x
+nmod-left-identity-proof : (n : ℕ) → (x : NMod n) → 
+  nmod-add n (nmod-identity n [] ∷ x ∷ []) ≡ x
+nmod-left-identity-proof Nat.zero x = 
+  -- For ℤ: 0ℤ + x = x, this follows from integer identity
+  ℤ-+-identityˡ x
+nmod-left-identity-proof (suc n') x = 
   toℕ-injective (
     let 
-      -- The left side is: toℕ (fromℕ< (m%n<n (0 + toℕ x) (suc n)))
-      -- We can use toℕ-fromℕ< which gives: toℕ (fromℕ< prf) ≡ m % n
-      lhs : toℕ (fromℕ< (m%n<n (0 + toℕ x) (suc n))) ≡ (0 + toℕ x) % (suc n)
-      lhs = toℕ-fromℕ< (m%n<n (0 + toℕ x) (suc n))
+      -- The left side is: toℕ (fromℕ< (m%n<n (0 + toℕ x) (suc n')))
+      lhs : toℕ (fromℕ< (m%n<n (0 Nat.+ toℕ x) (suc n'))) ≡ (0 Nat.+ toℕ x) % (suc n')
+      lhs = toℕ-fromℕ< (m%n<n (0 Nat.+ toℕ x) (suc n'))
       
-      -- And we know that (0 + toℕ x) % (suc n) ≡ toℕ x
-      mod-result : (0 + toℕ x) % (suc n) ≡ toℕ x  
-      mod-result = trans (cong (λ y → y % (suc n)) (+-identityˡ (toℕ x))) (needThis n x)
+      -- And we know that (0 + toℕ x) % (suc n') ≡ toℕ x
+      mod-result : (0 Nat.+ toℕ x) % (suc n') ≡ toℕ x  
+      mod-result = trans (cong (λ y → y % (suc n')) (+-identityˡ (toℕ x))) (needThis n' x)
       
     in 
-      -- Combining: toℕ (fromℕ< ...) ≡ (0 + toℕ x) % (suc n) ≡ toℕ x
       trans lhs mod-result
   )
 
 -- proof of right identity
 
--- Proof for right identity: x + 0 = x using toℕ-injective approach  
-fin-right-identity-proof : (n : ℕ) → (x : Fin (suc n)) → 
-  fin-add n (x ∷ fin-identity n [] ∷ []) ≡ x
-fin-right-identity-proof n x = 
+-- Proof for right identity: x + 0 = x
+nmod-right-identity-proof : (n : ℕ) → (x : NMod n) → 
+  nmod-add n (x ∷ nmod-identity n [] ∷ []) ≡ x
+nmod-right-identity-proof Nat.zero x = 
+  -- For ℤ: x + 0ℤ = x, this follows from integer identity
+  ℤ-+-identityʳ x
+nmod-right-identity-proof (suc n') x = 
   toℕ-injective (
     let 
-      -- The left side is: toℕ (fromℕ< (m%n<n (toℕ x + 0) (suc n)))
-      -- We can use toℕ-fromℕ< which gives: toℕ (fromℕ< prf) ≡ m % n
-      lhs : toℕ (fromℕ< (m%n<n (toℕ x + 0) (suc n))) ≡ (toℕ x + 0) % (suc n)
-      lhs = toℕ-fromℕ< (m%n<n (toℕ x + 0) (suc n))
+      -- The left side is: toℕ (fromℕ< (m%n<n (toℕ x + 0) (suc n')))
+      lhs : toℕ (fromℕ< (m%n<n (toℕ x Nat.+ 0) (suc n'))) ≡ (toℕ x Nat.+ 0) % (suc n')
+      lhs = toℕ-fromℕ< (m%n<n (toℕ x Nat.+ 0) (suc n'))
       
-      -- And we know that (toℕ x + 0) % (suc n) ≡ toℕ x
-      mod-result : (toℕ x + 0) % (suc n) ≡ toℕ x  
-      mod-result = trans (cong (λ y → y % (suc n)) (+-identityʳ (toℕ x))) (needThis n x)
+      -- And we know that (toℕ x + 0) % (suc n') ≡ toℕ x
+      mod-result : (toℕ x Nat.+ 0) % (suc n') ≡ toℕ x  
+      mod-result = trans (cong (λ y → y % (suc n')) (+-identityʳ (toℕ x))) (needThis n' x)
       
     in 
-      -- Combining: toℕ (fromℕ< ...) ≡ (toℕ x + 0) % (suc n) ≡ toℕ x
       trans lhs mod-result
   )
 
@@ -300,41 +318,66 @@ fin-right-identity-proof n x =
 -- now all proofs are done; use these to define lemmas
 -- this step is not strictly necessary, but it helps to clarify the structure
 
-fin-left-identity = fin-left-identity-proof
-fin-right-identity = fin-right-identity-proof  
-fin-associativity = fin-associativity-proof
-fin-left-inverse = fin-left-inverse-proof
-fin-right-inverse = fin-right-inverse-proof
+nmod-left-identity = nmod-left-identity-proof
+nmod-right-identity = nmod-right-identity-proof  
+nmod-associativity = nmod-associativity-proof
+nmod-left-inverse = nmod-left-inverse-proof
+nmod-right-inverse = nmod-right-inverse-proof
 
 
 
+{--
 
+-- TO DO: constructor for n=0 (Z) needs to be implemented in Countable.Sets for ℤ
 
 -----------------------------------------------------
--- Main Construction: Cyclic Group Structure for finite cyclic groups
+-- Main Construction: Cyclic Group Structure using NMod
 -----------------------------------------------------
 
--- Create cyclic group structure for Fin (suc n) with laws
+-- Create cyclic group structure for NMod n with laws
 CyclicGroup : (n : ℕ) → Σ (Structure {GroupSig}) (λ S → GroupLaws (proj₁ S) (proj₂ S))
-CyclicGroup n = (structure , laws)
+CyclicGroup Nat.zero = (structure , laws)
   where
     structure : Structure {GroupSig}
-    structure = (F (suc n) , operations)
+    structure = (Z←Z , operations)  -- TODO: Z←Z needs to be implemented in Countable.Sets for ℤ
       where
-        operations : (i : Fin (nOps GroupSig)) → Operator (F (suc n)) (proj₂ (proj₂ GroupSig i))
-        operations zero = fin-identity n        -- identity operation  
-        operations (suc zero) = fin-add n       -- addition operation
-        operations (suc (suc zero)) = fin-inverse n -- inverse operation
+        operations : (i : Fin (nOps GroupSig)) → Operator Z←Z (proj₂ (proj₂ GroupSig i))
+        operations zero = nmod-identity Nat.zero        -- identity operation (0ℤ)
+        operations (suc zero) = nmod-add Nat.zero       -- addition operation (ℤ.+)
+        operations (suc (suc zero)) = nmod-inverse Nat.zero -- inverse operation (ℤ.-)
         operations (suc (suc (suc ())))
     
     laws : GroupLaws (proj₁ structure) (proj₂ structure)
     laws = record
-      { left-identity = fin-left-identity n     -- Using our lemma
-      ; right-identity = fin-right-identity n   -- Using our lemma  
-      ; associativity = fin-associativity n     -- Using our lemma
-      ; left-inverse = fin-left-inverse n       -- Using our lemma
-      ; right-inverse = fin-right-inverse n     -- Using our lemma
+      { left-identity = nmod-left-identity Nat.zero     -- Using our lemma
+      ; right-identity = nmod-right-identity Nat.zero   -- Using our lemma  
+      ; associativity = nmod-associativity Nat.zero     -- Using our lemma
+      ; left-inverse = nmod-left-inverse Nat.zero       -- Using our lemma
+      ; right-inverse = nmod-right-inverse Nat.zero     -- Using our lemma
       }
+
+CyclicGroup (suc n') = (structure , laws)
+  where
+    structure : Structure {GroupSig}
+    structure = (F (suc n') , operations)
+      where
+        operations : (i : Fin (nOps GroupSig)) → Operator (F (suc n')) (proj₂ (proj₂ GroupSig i))
+        operations zero = nmod-identity (suc n')        -- identity operation  
+        operations (suc zero) = nmod-add (suc n')       -- addition operation
+        operations (suc (suc zero)) = nmod-inverse (suc n') -- inverse operation
+        operations (suc (suc (suc ())))
+    
+    laws : GroupLaws (proj₁ structure) (proj₂ structure)
+    laws = record
+      { left-identity = nmod-left-identity (suc n')     -- Using our lemma
+      ; right-identity = nmod-right-identity (suc n')   -- Using our lemma  
+      ; associativity = nmod-associativity (suc n')     -- Using our lemma
+      ; left-inverse = nmod-left-inverse (suc n')       -- Using our lemma
+      ; right-inverse = nmod-right-inverse (suc n')     -- Using our lemma
+      }
+
+
+
 
 
 -----------------------------------------------------
@@ -359,7 +402,6 @@ cyclic-group-abelian n a b =
       trans (toℕ-fromℕ< _)                                        -- LHS: toℕ(grp-add (a ∷ b ∷ []))
       (trans (cong (λ x → x % (suc n)) (+-comm (toℕ a) (toℕ b)))  -- Use ℕ commutativity
              (sym (toℕ-fromℕ< _))))                               -- RHS: toℕ(grp-add (b ∷ a ∷ []))
-
 
 
 -----------------------------------------------------
@@ -715,3 +757,6 @@ example-f-4 = refl
 
 -- Summary: The multiplication by 2 homomorphism on Z/6Z has image {0, 2, 4}
 -- and kernel {0, 3}, demonstrating that f is not injective but is a valid homomorphism
+
+
+--}
